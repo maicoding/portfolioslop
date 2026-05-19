@@ -1,4 +1,3 @@
-// src/main.js
 import './style.css';
 import { projectsData } from './data.js';
 import { initSlopBackground } from './slop-bg.js';
@@ -14,8 +13,6 @@ import {
     getRandomOutputVideoUrl
 } from './output-media.js';
 import { getRandomOutputLink } from './output-links.js';
-
-// --- INITIALIZE FLAT SLOP BACKGROUND WITH BOOT SEQUENCE ---
 const bootLog = document.getElementById('boot-log');
 const bootScreen = document.getElementById('system-bootup');
 const rssRowContainer = document.getElementById('rss-row-container');
@@ -52,62 +49,33 @@ async function runBootSequence() {
 runBootSequence();
 
 const fallbackRssFeed = [
-    {
-        id: 'rss-fallback-1',
-        title: 'AI infrastructure keeps leaking into everyday publishing stacks.',
-        href: 'https://arstechnica.com',
-        source: '#ars #rss',
-        timestamp: new Date().toISOString()
-    },
-    {
-        id: 'rss-fallback-2',
-        title: 'Search, feeds and platform politics continue to collapse into one interface war.',
-        href: 'https://news.google.com',
-        source: '#google-news #tech',
-        timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString()
-    },
-    {
-        id: 'rss-fallback-3',
-        title: 'Generative tooling keeps redrawing the line between workflow and spectacle.',
-        href: 'https://techcrunch.com/category/artificial-intelligence/',
-        source: '#techcrunch #rss',
-        timestamp: new Date(Date.now() - 1000 * 60 * 34).toISOString()
-    },
-    {
-        id: 'rss-fallback-4',
-        title: 'Cybersecurity headlines keep feeding the same anxious dashboard aesthetics.',
-        href: 'https://www.engadget.com/tag/ai/',
-        source: '#engadget #ai',
-        timestamp: new Date(Date.now() - 1000 * 60 * 52).toISOString()
-    },
-    {
-        id: 'rss-fallback-5',
-        title: 'Feeds turn into memory systems once platforms start shedding context.',
-        href: 'https://www.theverge.com',
-        source: '#verge #rss',
-        timestamp: new Date(Date.now() - 1000 * 60 * 71).toISOString()
-    }
+    '1984-to-go-claudia-mai',
+    'follow-the-white-rabbit',
+    'fast-fwd-too-slow',
+    'ich-bin-da',
+    'fmdg-i-find-the-luck'
+].map((id, index) => ({
+    id: `portfolio-fallback-${id}`,
+    title: projectsData[id]?.title || id,
+    href: projectsData[id]?.url || '',
+    source: 'Portfolio',
+    timestamp: new Date(Date.now() - index * 1000 * 60 * 18).toISOString()
+}));
+
+const fallbackDiscordProjectIds = [
+    'post-everything-bachelor-thesis',
+    'real-mix',
+    'nice-lab-50-50-nairobi'
 ];
 
-const fallbackDiscordFeed = [
-    { id: 'discord-fallback-1', content: '[Wired] AI agents are writing code. What happens to designers? https://wired.com/some-article', author: 'fallback', timestamp: new Date().toISOString() },
-    { id: 'discord-fallback-2', content: 'New generative model creates typography out of thin air! Check this paper: https://arxiv.org/abs/1234.567', author: 'fallback', timestamp: new Date(Date.now() - 3600000).toISOString() },
-    { id: 'discord-fallback-3', content: "IFTTT rule triggered: Liked in Reeder -> 'System Brutalism is back!'", author: 'fallback', timestamp: new Date(Date.now() - 7200000).toISOString() },
-    { id: 'discord-fallback-4', content: 'Discord mirror: crawling another archive of links, leaks and half-broken references.', author: 'fallback', timestamp: new Date(Date.now() - 9600000).toISOString() },
-    { id: 'discord-fallback-5', content: 'Signal drift report: AI timelines, feed sludge, browser ghosts, unstable citations.', author: 'fallback', timestamp: new Date(Date.now() - 12600000).toISOString() }
-];
+const fallbackDiscordFeed = fallbackDiscordProjectIds.map((id, index) => ({
+    id: `discord-fallback-${id}`,
+    content: `${projectsData[id]?.title || id} ${projectsData[id]?.url || ''}`.trim(),
+    author: 'Portfolio',
+    timestamp: new Date(Date.now() - index * 3600000).toISOString()
+}));
 
 const projectPopupConcepts = {
-    'fantasy-landscape': {
-        intro: 'Slop Gallery markiert hier den Einstieg in den flachgelegten Projektcluster. Statt schwerer Raumtechnik gibt es jetzt Posterlogik, Gloss-Flaechen, Statuswerte und einen absichtlich ueberdrehten Index.',
-        versions: [
-            {
-                href: '/threedvr.html',
-                title: 'slop gallery',
-                text: 'Die alte Raum-Geste wurde entfernt und als flache Galerie neu gebaut: keine Modelle, kein schwerer Renderballast, nur Neon, Scroll, UI-Sprache und genau genug Interaktion.',
-            }
-        ]
-    },
     'fmdg-i-find-the-luck': {
         intro: 'FMDG / I find the luck wird hier als Ausgangspunkt fuer zwei weiterentwickelte Antwortmaschinen gelesen: einmal als KI-basierte Such- und Bildmaschine und einmal als bewusst inszenierte Vibe-Coding-Oberflaeche.',
         versions: [
@@ -220,8 +188,6 @@ function normalizeRssItems(items = []) {
 function renderNewsSurface() {
     loadArchiveSurface();
 }
-
-// --- CUSTOM CURSOR LOGIC ---
 const cursorDot = document.getElementById('cursor-dot');
 const cursorRing = document.getElementById('cursor-ring');
 const cursorSwitcher = document.getElementById('cursor-switcher');
@@ -231,8 +197,6 @@ let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 let ringX = window.innerWidth / 2;
 let ringY = window.innerHeight / 2;
-
-// --- CAT EMOJI CURSOR TRAIL ---
 const catEmojis = ['😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '🐈', '🐈‍⬛', '🐱', '✨', '🐾'];
 let lastSpawnTime = 0;
 const cursorModes = new Set(['cats', 'minimal', 'off']);
@@ -268,14 +232,10 @@ cursorModeButtons.forEach((button) => {
 document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-
-    // Dot follows immediately
     cursorDot.style.left = `${mouseX}px`;
     cursorDot.style.top = `${mouseY}px`;
-
-    // Spawn cat emojis on move (throttle spawn rate)
     const now = Date.now();
-    if (cursorMode === 'cats' && now - lastSpawnTime > 150) { // spawn every 150ms of movement
+    if (cursorMode === 'cats' && now - lastSpawnTime > 150) {
         lastSpawnTime = now;
         spawnCatEmoji(mouseX, mouseY);
     }
@@ -301,20 +261,14 @@ function spawnCatEmoji(x, y) {
     el.style.cursor = 'none';
 
     document.body.appendChild(el);
-
-    // Animate out
     setTimeout(() => {
         el.style.transform = `translate(-50%, ${-140 - Math.random() * 90}px) scale(${endScale}) rotate(${(Math.random() - 0.5) * 120}deg)`;
         el.style.opacity = '0';
     }, 320);
-
-    // Remove from DOM
     setTimeout(() => {
         el.remove();
     }, 2100);
 }
-
-// Ring follows with a delay (Trailing effect)
 function animateCursor() {
     ringX += (mouseX - ringX) * 0.2;
     ringY += (mouseY - ringY) * 0.2;
@@ -324,9 +278,6 @@ function animateCursor() {
     requestAnimationFrame(animateCursor);
 }
 animateCursor();
-
-
-// --- OPENING SYSTEM "FILES" (DATABASE METAPHOR) ---
 const desktopSpace = document.getElementById('desktop-space');
 const directoryList = document.getElementById('directory-list');
 const isCompactViewport = () => window.matchMedia('(max-width: 768px)').matches;
@@ -334,7 +285,7 @@ const isCompactViewport = () => window.matchMedia('(max-width: 768px)').matches;
 const ownProjects = [
     "1984-to-go-claudia-mai", "100-poster-battle-2-sharing-cultural-identities",
     "follow-the-white-rabbit", "fast-fwd-too-slow-magazine", "fast-fwd-too-slow",
-    "ich-bin-da", "fmdg-i-find-the-luck", "fantasy-landscape",
+    "ich-bin-da", "fmdg-i-find-the-luck",
     "post-everything-bachelor-thesis"
 ];
 
@@ -377,13 +328,9 @@ const outputDefinitions = {
         accent: "#8d6bff"
     }
 };
-
-// All other projects in data.js are assumed to be "Studierenden-Projekte"
 const studentProjects = Object.keys(projectsData).filter(
     (id) => !ownProjects.includes(id),
 );
-
-// Generate the sidebar directory dynamically
 function createDirectoryHTML() {
     let html = '<div class="dir-category">/01/Eig_Projekte</div>';
     ownProjects.forEach(id => {
@@ -407,9 +354,6 @@ function createDirectoryHTML() {
     html += '<button class="file-item" data-id="denkraum-link">_ denkraum.html</button>';
     html += '<button class="file-item" data-id="prompting-workshops-link">_ Prompting_Workshops.pdf</button>';
     html += '<button class="file-item" data-id="ai-image-archive">_ KI_IMAGE_ARCHIVE.rnd</button>';
-
-    // Manifesto / Statements zu AI
-    // (Teaser-Banner & Feature-Blöcke)
     html += '<div class="dir-category" style="margin-top: 20px;">/04/Manifesto_Statements</div>';
     html += '<button class="file-item" data-id="statement-wandel">_ 01_Der_Wandel.txt</button>';
     html += '<button class="file-item" data-id="statement-kompetenz">_ 02_Die_neue_Kompetenz.txt</button>';
@@ -424,9 +368,6 @@ function createDirectoryHTML() {
     directoryList.innerHTML = html;
 }
 createDirectoryHTML();
-
-
-// --- DRAG AND DROP LOGIC & Z-INDEX MANAGEMENT ---
 let topZIndex = 100;
 
 function makeDraggable(windowEl) {
@@ -441,15 +382,12 @@ function makeDraggable(windowEl) {
     let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
     header.onmousedown = dragMouseDown;
-
-    // Bring to front on click anywhere in the window
     windowEl.addEventListener('mousedown', () => {
         topZIndex++;
         windowEl.style.zIndex = topZIndex;
     });
 
     function dragMouseDown(e) {
-        // Prevent drag if clicking close button
         if (e.target.classList.contains('window-close')) return;
 
         e = e || window.event;
@@ -461,7 +399,7 @@ function makeDraggable(windowEl) {
 
         topZIndex++;
         windowEl.style.zIndex = topZIndex;
-        windowEl.style.opacity = "0.8"; // slight transparency while dragging JS effect
+        windowEl.style.opacity = "0.8";
     }
 
     function elementDrag(e) {
@@ -785,9 +723,6 @@ function spawnAiImageArchive() {
     newWin.style.zIndex = topZIndex;
     attachCloseHandler(newWin);
 }
-
-
-// Attach Event Listeners to New Items
 const fileItems = document.querySelectorAll('.file-item');
 
 fileItems.forEach(item => {
@@ -815,8 +750,6 @@ fileItems.forEach(item => {
             window.location.href = '/pdfs/prompting-workshops.pdf';
             return;
         }
-
-        // Handle Gemini/Dev Category (Hardcoded overrides for now)
         if (id.startsWith('gemini-')) {
             const toolDefinition = geminiToolDefinitions[id];
             const fallbackDesc = "Entwicklung kreativer Web-Applikationen und visueller Tools in Kollaboration mit GenAI. Fokus auf experimentelles Frontend-Design und Architektur durch KI-Assistenz.";
@@ -844,8 +777,6 @@ fileItems.forEach(item => {
             spawnAiImageArchive();
             return;
         }
-
-        // Handle Manifesto / Statements
         if (id.startsWith('statement-')) {
             let title = id;
             let introText = "";
@@ -931,13 +862,8 @@ fileItems.forEach(item => {
             existingWin.style.zIndex = topZIndex;
             return;
         }
-
-        // Randomize spawn position slightly (but keep visible on desktop)
-        // Adjust random position so we don't spawn off-screen
         const randomLeft = 320 + Math.random() * Math.max(0, window.innerWidth - 750);
         const randomTop = 20 + Math.random() * Math.max(0, window.innerHeight - 500);
-
-        // Build HTML for the new popup window with REAL data
         const winHTML = `
           <div class="window" id="win-${id}" style="top: ${randomTop}px; left: ${randomLeft}px; width: 400px; max-height: 80vh;">
             <div class="window-header">
@@ -948,38 +874,25 @@ fileItems.forEach(item => {
               <div style="width:100%; margin-bottom: 10px; background: #eee;">
                  <img src="${project.image || fallbackOutputImage}" style="width: 100%; height: auto; display: block;" alt="Project Image">
               </div>
-              ${id === 'fantasy-landscape' ? renderProjectPopupConcept(id) : ''}
               <p data-i18n-project-text="${id}" style="margin-top:10px; color: #000; line-height: 1.5;">
                 ${project.text}
               </p>
-              ${id === 'fantasy-landscape' ? '' : renderProjectPopupConcept(id)}
+              ${renderProjectPopupConcept(id)}
               ${project.url && project.url !== '#' ? `<a href="${project.url}" target="_blank" style="display:inline-block; margin-top: 10px; background: #000; color: #fff; padding: 5px 10px; text-decoration: none;">_open_link</a>` : ''}
             </div>
           </div>
         `;
-
-        // Insert onto desktop
         desktopSpace.insertAdjacentHTML('beforeend', winHTML);
-
-        // Grab the newly created element
         const newWin = document.getElementById(`win-${id}`);
-
-        // Make it draggable
         makeDraggable(newWin);
-
-        // Bring to front immediately
         topZIndex++;
         newWin.style.zIndex = topZIndex;
-
-        // Add close logic
         const closeBtn = newWin.querySelector('.window-close');
         closeBtn.addEventListener('click', () => {
             newWin.remove();
         });
     });
 });
-
-// Add repel effect to scatter nav (Yehwan style minimal)
 const navItems = document.querySelectorAll('.nav-item');
 document.addEventListener('mousemove', (e) => {
     navItems.forEach(item => {
@@ -989,7 +902,7 @@ document.addEventListener('mousemove', (e) => {
         const dist = Math.hypot(e.clientX - itemX, e.clientY - itemY);
 
         if (dist < 80) {
-            const dx = (itemX - e.clientX) * 0.3; // repel distance
+            const dx = (itemX - e.clientX) * 0.3;
             const dy = (itemY - e.clientY) * 0.3;
             item.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random() * 10 - 5}deg)`;
             item.style.color = "blue";
@@ -1001,8 +914,6 @@ document.addEventListener('mousemove', (e) => {
         }
     });
 });
-
-// Click handlers for the scattered nav items
 navItems.forEach(item => {
     item.addEventListener('click', (e) => {
         const id = item.id;
@@ -1047,7 +958,7 @@ navItems.forEach(item => {
               <p><strong>Arbeitsweise: explorativ & systematisch</strong></p>
               <p>Meine Arbeitsweise ist explorativ und zugleich systematisch. Für meine Bachelorarbeit habe ich über 3.000 digitale Tools auf ihre gestalterische Einsetzbarkeit untersucht. Dieses Wissen nutze ich, um neue Werkzeuge schnell einzuordnen, produktive Workflows zu entwickeln und Systeme gezielt miteinander zu verbinden.</p>
               <p><strong>Eigene Tools & Setups</strong></p>
-              <p>Ich arbeite mit eigenen Setups, entwickle Tools und kombiniere bestehende Anwendungen zu funktionierenden Prozessen. Dazu gehören automatisierte Workflows, generative Bildsysteme, flache Interaktionsräume, Slop-Oberflächen sowie experimentelle Interfaces. Ansätze wie Vibe Coding und Vibe Design nutze ich, um Ideen direkt in Prototypen zu überführen und Gestaltung im Prozess zu entscheiden.</p>
+              <p>Ich arbeite mit eigenen Setups, entwickle Tools und kombiniere bestehende Anwendungen zu funktionierenden Prozessen. Dazu gehören automatisierte Workflows, generative Bildsysteme sowie experimentelle Interfaces. Ansätze wie Vibe Coding und Vibe Design nutze ich, um Ideen direkt in Prototypen zu überführen und Gestaltung im Prozess zu entscheiden.</p>
               <p><strong>Prompting & LLMs</strong></p>
               <p>Ein zentraler Bestandteil meiner Praxis ist Prompting und die Arbeit mit Large Language Models. Ich entwickle Prompt-Systeme, iterative Feedback-Prozesse zwischen Mensch und Modell und übersetze gestalterische Konzepte in Sprache. Wie diese Arbeit in die Lehre übergeht, ist unter /lehre beschrieben.</p>
               <p><strong>Agentische Systeme & KI-Workflows</strong></p>
@@ -1136,9 +1047,6 @@ function spawnIframeWindow(title, url) {
     newWin.style.zIndex = topZIndex;
     attachCloseHandler(newWin);
 }
-
-// --- RSS / DISCORD NEWS FEED (Floating Entities) ---
-// Fetch and spawn small, floating windows for news
 async function loadArchiveSurface() {
     if (!rssRowContainer || !discordSidebarContainer) return;
 
@@ -1170,8 +1078,6 @@ async function loadArchiveSurface() {
                 discordFeed = discordData.feed;
             }
         } catch (error) {
-            // In plain Vite preview, Netlify function routes return HTML.
-            // Falling back silently keeps the local archive usable.
         }
     }
 

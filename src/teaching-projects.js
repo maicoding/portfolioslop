@@ -11,8 +11,6 @@ const ownProjects = [
   'fast-fwd-too-slow',
   'ich-bin-da',
   'fmdg-i-find-the-luck',
-  'fantasy-landscape',
-  'digilab-ai-schriftzug',
   'post-everything-bachelor-thesis',
 ];
 

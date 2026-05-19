@@ -1,53 +1,47 @@
 import './portfolio-home.css';
 import { projectsData } from './data.js';
 import postEverythingLogoImage from './assets/post-everything-logo.png';
-import slopGalleryPosterImage from '../assets/slop-gallery-poster.png';
-import gravityImage from './assets/gravity-is-optional/image-0.png';
 
 const app = document.getElementById('portfolio-app');
 
-const featuredProjects = [
-  {
-    title: 'Post Everything',
-    category: 'Bachelorarbeit',
-    href: '/bachelorprojekt-post-everything.html',
-    cta: 'Projekt öffnen',
-    image: postEverythingLogoImage,
-    imageAlt: 'Post Everything Projektansicht',
-    meta: 'Regelbasierte Kreativitaet, Buchsystem, kontrollierter Zufall',
-    text: 'Ein 300-seitiges Buchprojekt ueber Gestaltung unter maschinenaehnlichen Bedingungen. Nicht glatt erzaehlt, sondern als System aus Regeln, Parametern und stoerender Konsequenz.',
-  },
-  {
-    title: 'FMDG / I find the luck',
-    category: 'Antwortmaschine',
-    href: '/version-3.html?focus=fmdg-i-find-the-luck',
-    cta: 'Antwortmaschine ansehen',
-    image: projectsData['fmdg-i-find-the-luck'].image,
-    imageAlt: 'Vorschaubild von FMDG / I find the luck',
-    meta: 'Fischli & Weiss, Suchmaschine, Uebersetzung, Interface',
-    text: 'Eine Frage-Maschine, die das Poetische nicht erklaert, sondern in Suchspuren, Bildreste und Antworten zerlegt. Das Interface bleibt bewusst etwas widerspenstig.',
-  },
-  {
-    title: 'Gravity Is Optional',
-    category: 'Raum / Erzählung',
-    href: '/gravity-is-optional.html',
-    cta: 'Projekt ansehen',
-    image: gravityImage,
-    imageAlt: 'Vorschaubild von Gravity Is Optional',
-    meta: 'Synthetische Fotografie, dokumentarische Stoerung, Serie',
-    text: 'Generative Bilder, die nicht nach KI-Spektakel schreien, sondern fast dokumentarisch wirken und dann an einer kleinen falschen Stelle kippen.',
-  },
-  {
-    title: 'Slop Gallery',
-    category: 'Flat Archive',
-    href: '/threedvr.html',
-    cta: 'Slop Gallery oeffnen',
-    image: slopGalleryPosterImage,
-    imageAlt: 'Flache Slop-Galerie als Vorschaubild',
-    meta: 'Posterlogik, Canvas-Gluehen, ueberdrehter Projektindex',
-    text: 'Der ehemalige Raum-Cluster ist jetzt maximal flach: Neonposter, Statuswerte, Gloss, UI-Behauptungen und genau null schwere Modelllogik.',
-  },
+const decodeHtml = (value = '') => {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = value;
+  return textarea.value;
+};
+
+const cleanText = (value = '') =>
+  decodeHtml(value)
+    .replace(/&#8230;|&hellip;/g, '...')
+    .replace(/&#8211;/g, '-')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const featuredProjectIds = [
+  'post-everything-bachelor-thesis',
+  'fmdg-i-find-the-luck',
+  '1984-to-go-claudia-mai',
+  'follow-the-white-rabbit',
 ];
+
+const featuredProjects = featuredProjectIds
+  .map((id) => {
+    const project = projectsData[id];
+    if (!project) return null;
+
+    return {
+      title: decodeHtml(project.title),
+      category: 'Portfolio',
+      href: project.url,
+      cta: 'Projekt öffnen',
+      image: project.image || postEverythingLogoImage,
+      imageAlt: decodeHtml(project.title),
+      meta: 'Portfolio',
+      text: cleanText(project.text),
+    };
+  })
+  .filter(Boolean);
 
 const pathways = [
   {

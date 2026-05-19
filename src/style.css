@@ -1,4 +1,3 @@
-/* src/style.css - Raw HTML/System Brutalism Aesthetic */
 html,
 body {
   margin: 0;
@@ -6,14 +5,14 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  /* Desktop metaphor: no global scrolling, just window scrolling */
+
   background: #ffffff;
   color: #000000;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 13px;
   line-height: 1.4;
   cursor: none;
-  /* We use custom cursors */
+
 }
 
 body.cursor-mode-off,
@@ -27,7 +26,6 @@ body.cursor-mode-off .window-close {
   box-sizing: border-box;
 }
 
-/* Custom Cursors (Codepen references style) */
 .cursor-dot {
   position: fixed;
   top: 0;
@@ -155,7 +153,6 @@ body.cursor-mode-minimal .cursor-ring {
   }
 }
 
-/* Hovering active elements */
 body:has(button:hover) .cursor-ring,
 body:has(a:hover) .cursor-ring,
 body:has(.window-header:hover) .cursor-ring {
@@ -205,7 +202,6 @@ body:has(.window-header:hover) .cursor-ring {
   color: #ccff00;
 }
 
-/* Flat slop overlay layer */
 #slop-canvas-container {
   position: fixed;
   top: 0;
@@ -224,7 +220,6 @@ body:has(.window-header:hover) .cursor-ring {
   mix-blend-mode: multiply;
 }
 
-/* Main Directory */
 #directory-container {
   position: absolute;
   top: 20px;
@@ -294,7 +289,6 @@ body:has(.window-header:hover) .cursor-ring {
   text-decoration: none;
 }
 
-/* Background scattered Nav Links (Yehwan Song) */
 .scatter-nav .nav-item {
   position: absolute;
   color: #000;
@@ -362,7 +356,6 @@ body:has(.window-header:hover) .cursor-ring {
   transform: rotate(0deg) scale(1.04);
 }
 
-/* The Desktop Space / Windows */
 #desktop-space {
   position: absolute;
   top: 0;
@@ -370,7 +363,7 @@ body:has(.window-header:hover) .cursor-ring {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  /* Let clicks pass through if empty */
+
   z-index: 40;
 }
 
@@ -452,7 +445,7 @@ body:has(.window-header:hover) .cursor-ring {
 .window {
   position: absolute;
   pointer-events: auto;
-  /* Catch clicks */
+
   background: #fff;
   border: 1px solid #000;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
@@ -482,7 +475,7 @@ body:has(.window-header:hover) .cursor-ring {
   font-size: 11px;
   font-weight: bold;
   cursor: none;
-  /* Handled by JS dragging cursor */
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -747,7 +740,6 @@ body:has(.window-header:hover) .cursor-ring {
   }
 }
 
-/* Mobile basic adjustments */
 @media (max-width: 768px) {
   html,
   body {

@@ -1,5 +1,3 @@
-import slopGalleryPosterImage from '../assets/slop-gallery-poster.png';
-import digilabLogoImage from './assets/digilablogo.png';
 import postEverythingLogoImage from './assets/post-everything-logo.png';
 
 export const projectsData = {
@@ -44,18 +42,6 @@ export const projectsData = {
     "text": "Ausgangspunkt der Arbeit ist das Buch „Findet mich das Glück?“ vom Schweizer Künstlerpaar Fischli &amp; Weiss. In diesem Buch werden mehr als 300 Fragen gestellt. Diese wurden in Google Translator und Babelfish eingegeben und damit automatisiert ins Englische übersetzt. Die technischen Dienste des Internets werden damit zum Transformator der „geflüsterten Botschaft“. Es entstehen mehr oder minder genau übersetzte, teilweise auch neue Fragen. Diese oft nicht zu beantwortenden Fragen stelle ich in der mechanischen Übersetzung dem Internet als riesiger Interpretations- und Wissensmaschine. Ich suche nach Antworten bei Flickr und Twitter, den modernen Hilfsmitteln für visuelle und sprachliche Kommunikation. Der Output wird auf einer als Antwortmaschine angelegten Webseite dargestellt: ständig...",
     "image": "https://sugarscroll.de/wp-content/uploads/2012/12/ifindtheluck6-710x501.jpg",
     "url": "https://sugarscroll.de/work/fmdg-i-find-the-luck/"
-  },
-  "fantasy-landscape": {
-    "title": "Slop Gallery",
-    "text": "Eine bewusst flachgedrueckte Galerie aus Neonpostern, Gloss-Flaechen, Statusanzeigen und viel zu selbstbewusster Interface-Sprache. Was frueher nach Raum behauptet wurde, ist jetzt ein scrollbarer Slop-Index: laut, billig-glamouroes und trotzdem funktional.",
-    "image": slopGalleryPosterImage,
-    "url": "/threedvr.html"
-  },
-  "digilab-ai-schriftzug": {
-    "title": "digilab.ai Schriftzug",
-    "text": "Schriftzug aus dichtem, flauschigem Fell, irgendwo zwischen Produktbild, Plueschtier und digitalem Artefakt. Typografie wird hier nicht nur gesetzt, sondern als ueberreizte, taktile Bildbehauptung inszeniert.",
-    "image": digilabLogoImage,
-    "url": "#"
   },
   "post-everything-bachelor-thesis": {
     "title": "Post Everything",

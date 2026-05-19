@@ -23,7 +23,6 @@ const pairs = [
   ['Projekt öffnen', 'Open project'],
   ['Projekt ansehen', 'View project'],
   ['Antwortmaschine ansehen', 'View answer machine'],
-  ['Slop Gallery oeffnen', 'Open Slop Gallery'],
   ['Ausgewählte Arbeiten', 'Selected Works'],
   ['Weitere Bereiche', 'More Sections'],
   ['Postdigitales Projekt öffnen', 'Open Postdigital Project'],
@@ -119,7 +118,7 @@ const pairs = [
   ['Darstellungs-Modus', 'Display mode'],
   ['2D Rechteck', '2D rectangle'],
   ['2D Kreis', '2D circle'],
-  ['Iso Block', 'Iso block'],
+  ['3D Isometrisch (Block)', '3D isometric (block)'],
   ['Organisch (Blob)', 'Organic (blob)'],
   ['Raster anzeigen', 'Show grid'],
   ['Alles loeschen', 'Clear all'],
@@ -183,7 +182,6 @@ const pairs = [
   ['links', 'left'],
   ['rechts', 'right'],
   ['weitere arbeiten', 'further works'],
-  ['eigene projekte / slop gallery', 'own projects / slop gallery'],
   ['Im Feld scrollen oder ziehen', 'Scroll or drag in the field'],
   ['Projektliste', 'Project list'],
   ['Kontext', 'Context'],
@@ -484,23 +482,17 @@ const paragraphPairs = [
 
 const attributePairs = [
   ['Vorschau aus Post Everything', 'Preview from Post Everything'],
-  ['Flache Neon-Slop-Galerie als Vorschau', 'Flat neon slop gallery preview'],
   ['Portfolio, Lehre, Tools und ausgewählte Projekte von Claudia Mai.', 'Portfolio, teaching, tools and selected projects by Claudia Mai.'],
   ['Claudia Mai: Portfolio und postdigitales Projekt.', 'Claudia Mai: portfolio and postdigital project.'],
   ['Denkraum mit Trendfeldern, Archivspuren und KI-generierten Artefakten.', 'Thinking Space with trend fields, archive traces and AI-generated artifacts.'],
   ['Post Everything Projektansicht', 'Post Everything project view'],
   ['Vorschaubild von FMDG / I find the luck', 'Preview image of FMDG / I find the luck'],
   ['Vorschaubild von Gravity Is Optional', 'Preview image of Gravity Is Optional'],
-  ['Flache Slop-Galerie als Vorschaubild', 'Flat slop gallery preview image'],
   ['Atmosphärische Projektansicht aus Gravity Is Optional', 'Atmospheric project view from Gravity Is Optional'],
   ['Zum Beispiel: Wie setzt du Prompting in deiner Lehre ein?', 'For example: How do you use prompting in your teaching?'],
 ];
 
 const projectTextEn = {
-  'fantasy-landscape':
-    'A deliberately flattened gallery of neon posters, glossy panels, status readouts and overconfident interface language. What used to claim space now becomes a scrollable slop index: loud, cheap-glamorous and still functional.',
-  'digilab-ai-schriftzug':
-    'A lettering object made of dense, fluffy fur, somewhere between product image, plush toy and digital artifact. Typography is staged as an overloaded tactile image claim.',
   'post-everything-bachelor-thesis':
     'A bachelor thesis on rule-based creativity and machine-like conditions in design. Around 250 terms with the prefix “post” were designed under strictly random parameters: programs, time windows, search engines, typography, colors and placements were defined in advance. The project examines how creative authorship changes when human design is deliberately bound to a machine-like rule system. The result is a 300-page book, a 1,120-page rulebook and a visual investigation of control, systematics and artificial intelligence in the design process.',
   'fmdg-i-find-the-luck':
