@@ -1,7 +1,11 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 
+const isGitHubPages = process.env.GITHUB_PAGES === 'true'
+const githubPagesBase = process.env.GITHUB_PAGES_BASE || '/portfolioslop/'
+
 export default defineConfig({
+  base: isGitHubPages ? githubPagesBase : '/',
   build: {
     rollupOptions: {
       input: {

@@ -18,6 +18,30 @@ npm run dev
 
 Then visit `http://localhost:4173`.
 
+## GitHub Pages
+
+The project ships with a Pages-specific build because it is deployed as a
+project site under `/portfolioslop/`:
+
+```bash
+npm run build:pages
+```
+
+That command builds with Vite's Pages base path, prefixes preserved root-level
+URLs in copied legacy pages, and adds `dist/.nojekyll` so GitHub Pages serves
+underscored assets and folders normally. The workflow in
+`.github/workflows/deploy-pages.yml` publishes `dist` on every push to `main`.
+
+Expected Pages URL:
+
+```text
+https://maicoding.github.io/portfolioslop/
+```
+
+The Netlify functions are kept for the Netlify version and for source parity
+with the old portfolio. GitHub Pages is static, so dynamic function calls should
+use the existing client-side fallbacks there.
+
 ## Files
 
 - `index.html` contains the page structure.
