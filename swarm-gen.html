@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swarm Gen</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+
+<body class="swarm-body">
+  <div class="swarm-app">
+    <div id="swarm-canvas" class="swarm-canvas"></div>
+
+    <aside class="swarm-panel">
+      <div class="swarm-card">
+        <div class="swarm-card__header">
+          <div class="swarm-logo" aria-hidden="true">SG</div>
+          <div>
+            <p class="swarm-kicker">3D particle tool</p>
+            <h1>Swarm Gen</h1>
+          </div>
+        </div>
+
+        <p class="swarm-intro">
+          Erst kommt das Bild: Form, Dichte, Bewegung und Licht. Danach kann aus dem aktuellen Zustand ein
+          exportierbarer Standalone-Code erzeugt werden.
+        </p>
+
+        <div class="swarm-section">
+          <label class="swarm-label" for="shape-select">Geometric Base</label>
+          <div id="shape-grid" class="shape-grid"></div>
+        </div>
+
+        <div class="swarm-section">
+          <div class="range-control">
+            <div class="range-control__meta">
+              <span>Particles</span>
+              <strong id="count-value">15,000</strong>
+            </div>
+            <input id="count-range" type="range" min="1000" max="40000" step="1000" value="15000">
+          </div>
+          <div id="param-controls" class="param-controls"></div>
+        </div>
+      </div>
+
+      <div class="swarm-card swarm-card--output">
+        <div class="swarm-output-meta">
+          <span class="swarm-label">Current Output</span>
+          <strong id="active-shape-label">4D Tesseract</strong>
+        </div>
+        <p class="swarm-output-copy">
+          Das laufende Rendering ist der eigentliche Output. Wenn die Konfiguration sitzt, kann daraus im
+          naechsten Schritt ein kopierbarer Export erzeugt werden.
+        </p>
+      </div>
+
+      <div class="swarm-actions">
+        <button id="generate-code" class="swarm-btn swarm-btn--ghost" type="button">Generate Code</button>
+        <button id="download-html" class="swarm-btn swarm-btn--primary" type="button">Download HTML</button>
+        <button id="capture-frame" class="swarm-btn swarm-btn--success" type="button">Render PNG</button>
+        <button id="toggle-code" class="swarm-btn swarm-btn--ghost" type="button">Open Code</button>
+        <button id="copy-code" class="swarm-btn swarm-btn--ghost" type="button">Copy Code</button>
+      </div>
+      <a class="swarm-back" href="/version-5.html">Zurueck zur Tool Gallery</a>
+    </aside>
+
+    <div class="swarm-status">
+      Output live:
+      <strong id="live-state-label">Preview active</strong>
+    </div>
+
+    <div id="code-modal" class="code-modal" hidden>
+      <div class="code-shell">
+        <div class="code-shell__bar">
+          <div class="code-dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <span class="code-file">swarm_export.html</span>
+          <div class="code-shell__actions">
+            <button id="copy-code-modal" class="swarm-btn swarm-btn--small swarm-btn--primary" type="button">Copy All</button>
+            <button id="close-code" class="swarm-btn swarm-btn--small swarm-btn--ghost" type="button">Close</button>
+          </div>
+        </div>
+        <div class="code-shell__info">
+          <p>Export basiert auf der zuletzt generierten Konfiguration.</p>
+        </div>
+        <pre id="code-output" class="code-output"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/swarm-gen.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lehrkonzept — Claudia Mai</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background: #e5e5e5;
+      color: #000000;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      cursor: auto;
+      line-height: 1.6;
+    }
+    ::selection {
+      background: #ccff00;
+      color: #000000;
+    }
+    .c-wrapper {
+      padding: 5vh 5vw;
+      display: flex;
+      justify-content: center;
+    }
+    .c-window {
+      width: 100%;
+      max-width: 800px;
+      background: #ffffff;
+      border: 2px solid #000000;
+      box-shadow: 8px 8px 0px rgba(0, 0, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+    }
+    .c-window-header {
+      background: #000000;
+      color: #ffffff;
+      padding: 8px 15px;
+      font-family: monospace;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      text-transform: uppercase;
+    }
+    .c-window-header span {
+      flex: 1 1 16rem;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .c-back-btn {
+      color: #ccff00;
+      text-decoration: none;
+      font-weight: bold;
+      border: 1px solid #ccff00;
+      padding: 2px 8px;
+      transition: all 0.2s;
+    }
+    .c-back-btn:hover {
+      background: #ccff00;
+      color: #000000;
+    }
+    .c-content {
+      padding: 40px 50px;
+    }
+    h1.c-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: #000;
+      font-family: monospace;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+    }
+    .c-title-highlight {
+      background: #ccff00;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-left: -10px;
+      border: 2px solid #000;
+    }
+    .c-section {
+      margin-bottom: 2.5rem;
+    }
+    .c-section h3 {
+      font-size: 1.25rem;
+      color: #000000;
+      margin-bottom: 1rem;
+      border-top: 2px solid #000;
+      padding-top: 1rem;
+      font-weight: bold;
+      font-family: monospace;
+      text-transform: uppercase;
+      display: block;
+      width: 100%;
+    }
+    .c-section p {
+      font-size: clamp(1rem, 1.2vw, 1.1rem);
+      color: #111;
+      margin-bottom: 1.2rem;
+      text-align: justify;
+      hyphens: auto;
+    }
+    .c-signature {
+      margin-top: 3rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: blue;
+      font-family: monospace;
+      text-transform: uppercase;
+    }
+    .c-qa-shell {
+      margin-top: 3rem;
+      border: 2px solid #000;
+      background:
+        linear-gradient(135deg, rgba(204, 255, 0, 0.2), transparent 45%),
+        #f8f8f8;
+      padding: 24px;
+      box-shadow: 8px 8px 0 rgba(0, 0, 255, 0.15);
+    }
+    .c-qa-shell h3 {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      font-family: monospace;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+    .c-qa-intro {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: #111;
+    }
+    .c-qa-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .c-qa-chip {
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+      padding: 8px 10px;
+      flex: 1 1 13rem;
+      max-width: 100%;
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-align: left;
+    }
+    .c-qa-chip:hover,
+    .c-qa-chip:focus-visible {
+      background: #000;
+      color: #ccff00;
+      outline: none;
+    }
+    .c-qa-form {
+      display: grid;
+      gap: 10px;
+    }
+    .c-qa-input {
+      width: 100%;
+      min-height: 88px;
+      padding: 12px;
+      border: 2px solid #000;
+      font: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      background: #fff;
+    }
+    .c-qa-submit {
+      justify-self: start;
+      border: 2px solid #000;
+      background: #ccff00;
+      color: #000;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .c-qa-submit:hover,
+    .c-qa-submit:focus-visible {
+      background: #000;
+      color: #ccff00;
+      outline: none;
+    }
+    .c-qa-output {
+      margin-top: 1rem;
+      border: 2px solid #000;
+      background: #fff;
+      padding: 16px;
+    }
+    .c-qa-output-label {
+      display: block;
+      margin-bottom: 10px;
+      background: blue;
+      color: #fff;
+      padding: 3px 8px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .c-qa-output p {
+      margin: 0;
+      font-size: 1rem;
+      color: #111;
+      text-align: left;
+      hyphens: auto;
+    }
+    
+    @media (max-width: 600px) {
+      .c-wrapper {
+        padding: 2.5vh 2.5vw;
+      }
+      .c-window {
+        box-shadow: 4px 4px 0 rgba(0, 0, 255, 0.18);
+      }
+      .c-window-header {
+        align-items: flex-start;
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+      .c-content {
+        padding: 18px 16px;
+      }
+      h1.c-title {
+        line-height: 1.05;
+      }
+      .c-title-highlight {
+        margin-left: 0;
+        padding: 4px 8px;
+      }
+      .c-section h3 {
+        font-size: 1.05rem;
+      }
+      .c-section p,
+      .c-qa-output p {
+        text-align: left;
+        hyphens: manual;
+      }
+      .c-qa-shell {
+        padding: 16px 14px;
+        box-shadow: 4px 4px 0 rgba(0, 0, 255, 0.12);
+      }
+      .c-qa-chip,
+      .c-qa-submit {
+        width: 100%;
+      }
+      .c-qa-output-label {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="c-wrapper">
+    <div class="c-window">
+      <!-- Window Header Bar -->
+      <div class="c-window-header">
+        <span>_READER_APP.exe // SYSTEM_MEMO</span>
+        <a href="index.html" class="c-back-btn">[ CLOSE ]</a>
+      </div>
+
+      <!-- Main Document Area -->
+      <div class="c-content">
+        <h1 class="c-title"><span class="c-title-highlight">Lehrkonzept</span></h1>
+        
+        <div class="c-section">
+          <h3>Einleitung und Haltung</h3>
+          <p>Meine Lehre entsteht an der Schnittstelle von gestalterischer Praxis, KI-basierter Produktion und kritischer Reflexion. Sie ist nicht auf einzelne Tools ausgerichtet, sondern auf die Fähigkeit, mit dynamischen Systemen umzugehen, Entscheidungen zu treffen, Ergebnisse einzuordnen und die eigene Praxis kontinuierlich weiterzuentwickeln.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Future Skills</h3>
+          <p>Ein zentrales Anliegen ist die Vermittlung von Future Skills im Kontext KI-basierter Gestaltung. Diese Kompetenzen sind nicht statisch, sondern an sich verändernde Produktionsbedingungen gebunden. Sie entstehen durch wiederholte, reflektierte Auseinandersetzung mit neuen Technologien, nicht durch einmalige Tool-Einführungen, sondern durch kontinuierliche Praxis.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Lernprozess und Haltung der Studierenden</h3>
+          <p>Studierende lernen, sich immer wieder auf neue Technologien einzulassen, diese einzuordnen und in eigene Arbeitsweisen zu überführen. KI wird als Teil eines reflektierten Prozesses eingesetzt, in dem Ergebnisse nicht nur produziert, sondern analysiert, bewertet und kritisch eingeschätzt werden. Das Ziel ist keine Beherrschung einzelner Tools, sondern Handlungsfähigkeit in offenen, sich verändernden Systemen.</p>
+
+          <p>Technik wird dabei nur so weit eingeführt, wie sie im jeweiligen Kontext erforderlich ist. Das Spektrum technischer Kompetenzen erweitert sich schrittweise, ohne zu überfordern, aber mit dem Anspruch, es kontinuierlich zu verschieben. Technisches Grundwissen ist dabei keine Voraussetzung, sondern entsteht gemeinsam im Prozess.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Prompting als Lehrinhalt</h3>
+          <p>Ich habe mehrere Prompting-Kurse entwickelt und unterrichtet. Im Zentrum steht, wie sprachbasierte Interfaces als gestalterisches Werkzeug eingesetzt werden können: die Entwicklung von Prompt-Systemen, iterative Feedback-Prozesse zwischen Mensch und Modell, die Übersetzung gestalterischer Konzepte in Sprache sowie die gezielte Steuerung und Bewertung von Outputs.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Eigene Methoden</h3>
+          <p>In der Lehre setze ich eigene Methoden ein, darunter Reverse Prompting, Critical Audit Mode und Critical Foresight Mode. Diese Ansätze strukturieren die Auseinandersetzung mit KI-Outputs. Sie machen sichtbar, wie Modelle funktionieren, wo ihre Grenzen liegen und wie gestalterische Qualität im Dialog mit Systemen entwickelt werden kann. Der breite Einsatz unterschiedlicher Tools ermöglicht es dabei, individuelle Lösungen für Studierende anzubieten, je nach Ausgangslage, Interesse und Projektkontext.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Kursformate und Projekte</h3>
+          <p>Zu meinen Lehrformaten gehören Kurse wie Beyond HTML und HTTPoetics, in denen Gestaltung, Code und kritische Praxis zusammengeführt werden. Kollaborative Projekte wie Truth Machine, ein Net-Art-Projekt mit Studierendengruppen aus Dortmund und Nairobi, erweitern den Lehrraum über institutionelle Grenzen hinaus. Zusammenarbeit findet dabei auf verschiedenen Ebenen statt: zwischen Studierenden, zwischen Lehrenden und mit Akteurinnen und Akteuren aus der Praxis, die unterschiedliche disziplinäre Perspektiven einbringen. Wie diese Formate in die eigene gestalterische Praxis rückwirken, ist unter /about beschrieben.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>KI als Gegenstand und Werkzeug</h3>
+          <p>KI ist in meiner Lehre nicht nur Werkzeug, sondern auch Gegenstand. Studierende untersuchen, wie KI-basierte Systeme Produktionslogiken verändern, welche ästhetischen und inhaltlichen Konsequenzen das hat und wie sich gestalterische Kontrolle verschiebt, wenn Modelle und Interfaces in den Prozess eingebunden werden.</p>
+        </div>
+
+        <div class="c-section">
+          <h3>Schluss und Offenheit</h3>
+          <p>Lehre verstehe ich als kritische Praxis, die sich selbst immer wieder aktualisieren muss. Gerade im Kontext von KI ist diese Aktualität zentral, weil sich Werkzeuge, Interfaces und Möglichkeiten grundlegend und schnell verändern. Mein Anspruch ist es, diesen Wandel nicht nur zu vermitteln, sondern ihn gemeinsam mit Studierenden zu durchdenken und zu gestalten.</p>
+        </div>
+
+        <section class="c-qa-shell" aria-labelledby="concept-qa-title">
+          <h3 id="concept-qa-title">Ask KI</h3>
+          <p class="c-qa-intro">Demo eines eigenen Chatbots auf der Seite. Antworten greifen die Inhalte und Argumente des Textes auf, werden aber generiert, dadurch können Unterschiede zum Originaltext entstehen.</p>
+
+          <div class="c-qa-presets">
+            <button type="button" class="c-qa-chip" data-question="Was ist der Kern deines Lehrkonzepts?">Was ist der Kern?</button>
+            <button type="button" class="c-qa-chip" data-question="Warum spielt KI in deinem Lehrkonzept so eine große Rolle?">Warum KI?</button>
+            <button type="button" class="c-qa-chip" data-question="Welche Future Skills vermittelst du in der Lehre?">Welche Future Skills?</button>
+            <button type="button" class="c-qa-chip" data-question="Wie arbeiten Studierende in deinen Kursen praktisch mit neuen Technologien?">Wie arbeiten Studierende?</button>
+          </div>
+
+          <form class="c-qa-form" id="concept-qa-form">
+            <label for="concept-question" class="c-qa-intro" style="margin-bottom:0;">Eigene Frage:</label>
+            <textarea id="concept-question" class="c-qa-input" placeholder="Zum Beispiel: Wie setzt du Prompting in deiner Lehre ein?"></textarea>
+            <button type="submit" class="c-qa-submit">Antwort lesen</button>
+          </form>
+
+          <div class="c-qa-output" id="concept-answer" aria-live="polite">
+            <span class="c-qa-output-label">KI gestützte Beantwortung zum Lehrkonzept. Trotz Erweiterung des verwendeten Sprachmodells (RAG) um das Konzept können die Antworten inhaltlich abweichen.</span>
+            <p>Fragen wie diese helfen, das Konzept nicht nur zu lesen, sondern zu prüfen. Stelle oben eine Frage oder klicke auf einen Einstieg.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/lehrkonzept-qa.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+  <script type="module">
+    import { initConceptLayer } from '/src/concept-layer.js';
+
+    initConceptLayer('lehrkonzept', { mountSelector: '.c-content' });
+  </script>
+</body>
+</html>

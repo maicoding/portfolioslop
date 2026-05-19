@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Motion Generator</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+
+<body class="social-body">
+  <div class="social-app">
+    <section class="stage-shell">
+      <header class="stage-header">
+        <div>
+          <p class="stage-kicker">Standalone Tool / Netlify Ready</p>
+          <h1>Social Motion Generator</h1>
+          <p class="stage-lead">
+            Baue Posts, Storys, Reels und Short-Ads aus einer Oberfläche mit typografischen Szenen,
+            Format-Presets und exportfertigen Assets.
+          </p>
+        </div>
+
+        <div class="stage-toolbar">
+          <label class="toolbar-field">
+            <span>Format</span>
+            <select id="project-format"></select>
+          </label>
+          <label class="toolbar-field">
+            <span>Theme</span>
+            <select id="project-theme"></select>
+          </label>
+          <label class="toolbar-toggle">
+            <input type="checkbox" id="toggle-safe-zones" checked>
+            <span>Safe Zones</span>
+          </label>
+          <a class="back-link" href="/">Zurueck zum Portfolio</a>
+        </div>
+      </header>
+
+      <div class="stage-main">
+        <div class="preview-column">
+          <div class="preview-meta">
+            <div class="meta-card">
+              <span>Canvas</span>
+              <strong id="meta-dimensions">1080 x 1920</strong>
+            </div>
+            <div class="meta-card">
+              <span>Ratio</span>
+              <strong id="meta-ratio">9:16</strong>
+            </div>
+            <div class="meta-card">
+              <span>Gesamtdauer</span>
+              <strong id="meta-duration">0.0s</strong>
+            </div>
+            <div class="meta-card">
+              <span>Empfehlung</span>
+              <strong id="meta-hint">Reel / Story</strong>
+            </div>
+          </div>
+
+          <div class="preview-stage">
+            <div id="preview-frame" class="preview-frame">
+              <canvas id="poster-canvas"></canvas>
+              <div id="safe-overlay" class="safe-overlay">
+                <div class="safe-guide safe-guide-top"></div>
+                <div class="safe-guide safe-guide-bottom"></div>
+                <div class="safe-guide safe-guide-left"></div>
+                <div class="safe-guide safe-guide-right"></div>
+                <span class="safe-label safe-label-top">Safe Top</span>
+                <span class="safe-label safe-label-bottom">CTA / UI Buffer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button id="play-btn" class="primary-btn">Preview abspielen</button>
+            <button id="export-current" class="ghost-btn">PNG aktuell</button>
+            <button id="export-all" class="ghost-btn">Alle PNGs</button>
+            <button id="export-video" class="accent-btn">WebM Export</button>
+            <button id="save-project" class="ghost-btn">Projekt speichern</button>
+            <button id="load-project" class="ghost-btn">Projekt laden</button>
+          </div>
+
+          <div class="copy-board">
+            <div class="copy-board-header">
+              <div>
+                <p class="panel-kicker">Copy Deck</p>
+                <h2>Caption, Hook und Hashtags</h2>
+              </div>
+              <button id="copy-caption" class="ghost-btn ghost-btn-small">Text kopieren</button>
+            </div>
+
+            <div class="copy-board-grid">
+              <label class="panel-field">
+                <span>Kampagne</span>
+                <input id="project-name" type="text" value="Motion Drop April">
+              </label>
+              <label class="panel-field">
+                <span>Handle / Brand</span>
+                <input id="project-handle" type="text" value="@claudiamai">
+              </label>
+              <label class="panel-field panel-field-wide">
+                <span>Caption-Basis</span>
+                <textarea id="project-caption" rows="3">Kinetic Type trifft Social-first Formatlogik. Ein Tool fuer schnelle Variationen, klare Hooks und exportierbare Motion-Assets.</textarea>
+              </label>
+              <label class="panel-field panel-field-wide">
+                <span>Hashtags</span>
+                <input id="project-hashtags" type="text" value="#motiondesign #socialmedia #kinetictype #designsystem">
+              </label>
+            </div>
+
+            <label class="panel-field">
+              <span>Generierter Post-Text</span>
+              <textarea id="caption-output" class="caption-output" rows="8" readonly></textarea>
+            </label>
+          </div>
+        </div>
+
+        <aside class="inspector">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Scenes</p>
+                <h2>Storyboard</h2>
+              </div>
+              <div class="panel-actions">
+                <button id="add-scene" class="ghost-btn ghost-btn-small">Neu</button>
+                <button id="duplicate-scene" class="ghost-btn ghost-btn-small">Duplizieren</button>
+              </div>
+            </div>
+            <div id="scene-list" class="scene-list"></div>
+            <div class="panel-actions secondary">
+              <button id="move-scene-up" class="ghost-btn ghost-btn-small">Nach oben</button>
+              <button id="move-scene-down" class="ghost-btn ghost-btn-small">Nach unten</button>
+              <button id="delete-scene" class="ghost-btn ghost-btn-small danger">Loeschen</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Look</p>
+                <h2>Theme-Presets</h2>
+              </div>
+              <button id="apply-theme-all" class="ghost-btn ghost-btn-small">Auf alle</button>
+            </div>
+            <div id="theme-pills" class="theme-pills"></div>
+          </div>
+
+          <div id="editor-ui" class="editor-stack">
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Content</p>
+                  <h2>Text & Message</h2>
+                </div>
+              </div>
+              <div class="panel-grid">
+                <label class="panel-field">
+                  <span>Szenenname</span>
+                  <input id="input-name" type="text">
+                </label>
+                <label class="panel-field">
+                  <span>Brand Badge</span>
+                  <input id="input-brand" type="text">
+                </label>
+                <label class="panel-field">
+                  <span>Kicker</span>
+                  <input id="input-kicker" type="text">
+                </label>
+                <label class="panel-field panel-field-wide">
+                  <span>Headline</span>
+                  <textarea id="input-title" rows="3"></textarea>
+                </label>
+                <label class="panel-field panel-field-wide">
+                  <span>Body</span>
+                  <textarea id="input-body" rows="4"></textarea>
+                </label>
+                <label class="panel-field panel-field-wide">
+                  <span>CTA</span>
+                  <input id="input-cta" type="text">
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Motion</p>
+                  <h2>Animation & Timing</h2>
+                </div>
+              </div>
+              <div class="panel-grid">
+                <label class="panel-field">
+                  <span>Effekt</span>
+                  <select id="input-anim-type">
+                    <option value="slide-up">Slide Up</option>
+                    <option value="slide-right">Slide Right</option>
+                    <option value="snap">Snap</option>
+                    <option value="flicker">Flicker</option>
+                    <option value="reveal">Reveal</option>
+                    <option value="drift">Drift</option>
+                    <option value="none">Keine</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Panel-Stil</span>
+                  <select id="input-panel-style">
+                    <option value="frame">Frame</option>
+                    <option value="split">Split Accent</option>
+                    <option value="badge">Badge</option>
+                    <option value="glow">Glow</option>
+                    <option value="none">Clean</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Anim-Dauer (ms)</span>
+                  <input id="input-anim-duration" type="number" min="100" step="50">
+                </label>
+                <label class="panel-field">
+                  <span>Szenen-Dauer (ms)</span>
+                  <input id="input-duration" type="number" min="300" step="100">
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Typography</p>
+                  <h2>Type System</h2>
+                </div>
+              </div>
+              <div class="panel-grid">
+                <label class="panel-field">
+                  <span>Display Font</span>
+                  <select id="input-display-font">
+                    <option value="Syne">Syne</option>
+                    <option value="Inter">Inter</option>
+                    <option value="Space Grotesk">Space Grotesk</option>
+                    <option value="Archivo Black">Archivo Black</option>
+                    <option value="Bebas Neue">Bebas Neue</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Body Font</span>
+                  <select id="input-body-font">
+                    <option value="Inter">Inter</option>
+                    <option value="Space Grotesk">Space Grotesk</option>
+                    <option value="Syne">Syne</option>
+                    <option value="Archivo Black">Archivo Black</option>
+                    <option value="Bebas Neue">Bebas Neue</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Ausrichtung</span>
+                  <select id="input-align">
+                    <option value="left">Links</option>
+                    <option value="center">Mitte</option>
+                    <option value="right">Rechts</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Kontur (px)</span>
+                  <input id="input-stroke-width" type="number" min="0" step="1">
+                </label>
+              </div>
+
+              <div class="range-grid">
+                <label class="range-field">
+                  <span>Headline <strong id="value-size">180</strong></span>
+                  <input id="input-size" type="range" min="40" max="320" step="2">
+                </label>
+                <label class="range-field">
+                  <span>Body <strong id="value-body-size">46</strong></span>
+                  <input id="input-body-size" type="range" min="18" max="96" step="1">
+                </label>
+                <label class="range-field">
+                  <span>Zeilenhoehe <strong id="value-line-height">0.88</strong></span>
+                  <input id="input-line-height" type="range" min="0.7" max="1.3" step="0.01">
+                </label>
+                <label class="range-field">
+                  <span>Laufweite <strong id="value-letter-spacing">0</strong></span>
+                  <input id="input-letter-spacing" type="range" min="-8" max="40" step="1">
+                </label>
+                <label class="range-field">
+                  <span>Rotation <strong id="value-rotation">0</strong></span>
+                  <input id="input-rotation" type="range" min="-25" max="25" step="1">
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Layout</p>
+                  <h2>Position & Safe Area</h2>
+                </div>
+              </div>
+              <div class="range-grid">
+                <label class="range-field">
+                  <span>X <strong id="value-x">0</strong></span>
+                  <input id="input-x" type="range" min="-320" max="320" step="1">
+                </label>
+                <label class="range-field">
+                  <span>Y <strong id="value-y">0</strong></span>
+                  <input id="input-y" type="range" min="-420" max="420" step="1">
+                </label>
+                <label class="range-field">
+                  <span>Image Scale <strong id="value-image-scale">1</strong></span>
+                  <input id="input-image-scale" type="range" min="0.6" max="1.8" step="0.01">
+                </label>
+                <label class="range-field">
+                  <span>Image X <strong id="value-image-x">0</strong></span>
+                  <input id="input-image-x" type="range" min="-400" max="400" step="1">
+                </label>
+                <label class="range-field">
+                  <span>Image Y <strong id="value-image-y">0</strong></span>
+                  <input id="input-image-y" type="range" min="-500" max="500" step="1">
+                </label>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-kicker">Background</p>
+                  <h2>Color, Gradient & Image</h2>
+                </div>
+              </div>
+              <div class="panel-grid">
+                <label class="panel-field">
+                  <span>Modus</span>
+                  <select id="input-bg-mode">
+                    <option value="gradient">Gradient</option>
+                    <option value="solid">Solid</option>
+                    <option value="image">Bild + Overlay</option>
+                  </select>
+                </label>
+                <label class="panel-field">
+                  <span>Gradient-Winkel</span>
+                  <input id="input-gradient-angle" type="number" step="5">
+                </label>
+                <label class="panel-field">
+                  <span>Text</span>
+                  <input id="input-text-color" type="color">
+                </label>
+                <label class="panel-field">
+                  <span>Accent</span>
+                  <input id="input-accent-color" type="color">
+                </label>
+                <label class="panel-field">
+                  <span>Body-Farbe</span>
+                  <input id="input-body-color" type="color">
+                </label>
+                <label class="panel-field">
+                  <span>Background</span>
+                  <input id="input-bg-color" type="color">
+                </label>
+                <label class="panel-field">
+                  <span>Gradient Start</span>
+                  <input id="input-gradient-start" type="color">
+                </label>
+                <label class="panel-field">
+                  <span>Gradient Ende</span>
+                  <input id="input-gradient-end" type="color">
+                </label>
+              </div>
+              <div class="range-grid">
+                <label class="range-field">
+                  <span>Image Opacity <strong id="value-image-opacity">0.42</strong></span>
+                  <input id="input-image-opacity" type="range" min="0" max="1" step="0.01">
+                </label>
+                <label class="range-field">
+                  <span>Overlay <strong id="value-overlay-opacity">0.22</strong></span>
+                  <input id="input-overlay-opacity" type="range" min="0" max="0.9" step="0.01">
+                </label>
+              </div>
+              <div class="upload-row">
+                <input id="input-image" type="file" accept="image/*" hidden>
+                <label for="input-image" class="ghost-btn">Bild laden</label>
+                <button id="clear-image" class="ghost-btn danger" type="button">Bild entfernen</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <p id="status-msg" class="status-msg"></p>
+
+  <input id="project-import" type="file" accept="application/json" hidden>
+
+  <script type="module" src="/src/social-generator.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

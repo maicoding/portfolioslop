@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Logo</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
+    <script src="https://unpkg.com/p5.js-svg@1.5.1"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-ui: #f4f4f2;
+            --bg-canvas: #ebebe9;
+            --border: #dbdbdb;
+            --accent: #000000;
+            --highlight: #CCFF00;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .mono { font-family: 'Space Mono', monospace; }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus { outline: none; }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 1px;
+            cursor: pointer;
+            background: #bbb;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -7px;
+            border: 1px solid var(--bg-ui);
+        }
+
+        #canvas-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: var(--bg-ui);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        .btn-tool {
+            border: 1px solid var(--border);
+            background: transparent;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: all 0.1s;
+        }
+
+        .btn-tool.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .primary-action {
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .primary-action:hover {
+            background: #222;
+        }
+
+        .brush-btn {
+            transition: transform 0.1s;
+        }
+
+        .brush-btn.active {
+            box-shadow: 0 0 0 2px var(--bg-ui), 0 0 0 4px var(--accent);
+            transform: scale(1.1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        canvas {
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body class="flex h-screen w-screen select-none">
+
+    <aside class="sidebar h-full">
+        <div class="p-8 pb-6 border-b border-[#dbdbdb]">
+            <h1 class="text-[11px] font-bold tracking-[0.4em] uppercase italic">Generative <span class="opacity-30 font-normal">Logo</span></h1>
+            <p class="text-[8px] mono mt-2 text-gray-400">BUILD: C2PANDA_SYSTEM_v4</p>
+        </div>
+
+        <div class="flex-grow overflow-y-auto px-8 py-6 space-y-8 no-scrollbar">
+            <div class="space-y-3">
+                <label class="block text-[9px] mono text-gray-400 uppercase tracking-widest">Render Mode</label>
+                <div class="flex gap-px bg-[#dbdbdb] border border-[#dbdbdb]">
+                    <button onclick="updateMode('logo')" id="mode-logo" class="flex-1 py-2 btn-tool active uppercase">Logo</button>
+                    <button onclick="updateMode('pattern')" id="mode-pattern" class="flex-1 py-2 btn-tool uppercase">Pattern</button>
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-[#dbdbdb]"></div>
+
+            <div class="space-y-5">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase tracking-widest">Color Mode</label>
+                        <span id="val-color" class="text-[10px] mono">ALL</span>
+                    </div>
+                    <input type="range" id="inp-color" min="0" max="3" step="1" value="3">
+                </div>
+
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-[8px] mono text-gray-400 uppercase tracking-widest">Primary Accent</label>
+                        <div class="flex gap-px bg-[#dbdbdb] border border-[#dbdbdb]">
+                            <button onclick="setPrimaryAccent('#000000')" id="p-accent-black" class="flex-1 py-1.5 text-[9px] btn-tool">Black</button>
+                            <button onclick="setPrimaryAccent('#CCFF00')" id="p-accent-neon" class="flex-1 py-1.5 text-[9px] btn-tool active">Neon</button>
+                            <button onclick="setPrimaryAccent('#FF0000')" id="p-accent-red" class="flex-1 py-1.5 text-[9px] btn-tool">Red</button>
+                            <button onclick="setPrimaryAccent('#0000FF')" id="p-accent-blue" class="flex-1 py-1.5 text-[9px] btn-tool">Blue</button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[8px] mono text-gray-400 uppercase tracking-widest">Secondary Accent (Mix 2)</label>
+                        <div class="flex gap-px bg-[#dbdbdb] border border-[#dbdbdb]">
+                            <button onclick="setSecondaryAccent('#000000')" id="s-accent-black" class="flex-1 py-1.5 text-[9px] btn-tool">Black</button>
+                            <button onclick="setSecondaryAccent('#CCFF00')" id="s-accent-neon" class="flex-1 py-1.5 text-[9px] btn-tool">Neon</button>
+                            <button onclick="setSecondaryAccent('#FF0000')" id="s-accent-red" class="flex-1 py-1.5 text-[9px] btn-tool active">Red</button>
+                            <button onclick="setSecondaryAccent('#0000FF')" id="s-accent-blue" class="flex-1 py-1.5 text-[9px] btn-tool">Blue</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-[#dbdbdb]"></div>
+
+            <div class="space-y-6">
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase">Grid X</label>
+                        <span id="val-cols" class="text-[10px] mono">3</span>
+                    </div>
+                    <input type="range" id="inp-cols" min="2" max="20" value="3">
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase">Size</label>
+                        <span id="val-size" class="text-[10px] mono">80</span>
+                    </div>
+                    <input type="range" id="inp-size" min="20" max="200" value="80">
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase">Roundness</label>
+                        <span id="val-round" class="text-[10px] mono">0.00</span>
+                    </div>
+                    <input type="range" id="inp-round" min="0" max="1" step="0.01" value="0">
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase">Scale</label>
+                        <span id="val-scale" class="text-[10px] mono">0.90</span>
+                    </div>
+                    <input type="range" id="inp-scale" min="0.5" max="1.5" step="0.01" value="0.9">
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-baseline">
+                        <label class="text-[9px] mono text-gray-400 uppercase">Density</label>
+                        <span id="val-density" class="text-[10px] mono">100%</span>
+                    </div>
+                    <input type="range" id="inp-density" min="0.1" max="1.0" step="0.05" value="1.0">
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[9px] mono text-gray-400 uppercase">Active Symbols</label>
+                    <div class="grid grid-cols-5 gap-1 bg-[#dbdbdb] border border-[#dbdbdb]">
+                        <button onclick="toggleSymbol(0)" id="sym-0" class="py-2 btn-tool active uppercase" title="Square">SQR</button>
+                        <button onclick="toggleSymbol(1)" id="sym-1" class="py-2 btn-tool active uppercase" title="Arc">ARC</button>
+                        <button onclick="toggleSymbol(2)" id="sym-2" class="py-2 btn-tool active uppercase" title="Circle">CIR</button>
+                        <button onclick="toggleSymbol(3)" id="sym-3" class="py-2 btn-tool active uppercase" title="Double Arc">DBL</button>
+                        <button onclick="toggleSymbol(4)" id="sym-4" class="py-2 btn-tool active uppercase" title="Cross">CRS</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-[#dbdbdb]">
+                <label class="block text-[9px] mono text-gray-400 uppercase tracking-widest mb-3">Manual Brush Tool</label>
+                <div class="flex gap-4 items-center">
+                    <button onclick="setBrush('#000000')" id="brush-black" class="w-5 h-5 rounded-full bg-black border border-gray-300 brush-btn"></button>
+                    <button onclick="setBrush('#CCFF00')" id="brush-neon" class="w-5 h-5 rounded-full bg-[#CCFF00] border border-gray-300 brush-btn active"></button>
+                    <button onclick="setBrush('#FF0000')" id="brush-red" class="w-5 h-5 rounded-full bg-[#FF0000] border border-gray-300 brush-btn"></button>
+                    <button onclick="setBrush('#0000FF')" id="brush-blue" class="w-5 h-5 rounded-full bg-[#0000FF] border border-gray-300 brush-btn"></button>
+                    <div class="w-px h-5 bg-[#dbdbdb]"></div>
+                    <button onclick="setBrush('clear')" id="brush-clear" class="w-5 h-5 rounded-full bg-white border border-gray-300 brush-btn flex items-center justify-center text-[10px] font-bold text-gray-400" title="Erase override">X</button>
+                </div>
+            </div>
+
+            <button onclick="remix()" class="w-full py-4 primary-action text-[10px] mono uppercase tracking-widest mt-4">Remix System</button>
+        </div>
+
+        <div class="p-8 border-t border-[#dbdbdb] bg-[#eeeeec] flex gap-2">
+            <button onclick="exportPNG()" class="flex-1 py-2 text-[10px] mono border border-black uppercase hover:bg-black hover:text-white transition-colors">PNG</button>
+            <button onclick="exportSVG()" class="flex-1 py-2 text-[10px] mono bg-black text-white uppercase hover:bg-gray-800 transition-colors">SVG</button>
+        </div>
+    </aside>
+
+    <main id="canvas-container">
+        <div class="absolute top-8 left-8 text-[9px] mono text-gray-400 uppercase tracking-[0.2em] pointer-events-none">
+            Processing: <span id="ui-seed">00000</span> // V-Sync Active
+        </div>
+        <div class="absolute bottom-8 right-8 text-[9px] mono text-gray-400 uppercase tracking-[0.2em] pointer-events-none">
+            Click elements to paint
+        </div>
+    </main>
+
+    <script>
+        let mode = 'logo';
+        let cols = 3;
+        let size = 80;
+        let roundness = 0;
+        let scaleVal = 0.9;
+        let seed = Math.floor(Math.random() * 99999);
+        let canvas;
+
+        let activeSymbols = [0, 1, 2, 3, 4];
+        let colorModes = ['PURE', 'MIX 1', 'MIX 2', 'ALL'];
+        let colorMode = 'ALL';
+
+        let primaryAccent = '#CCFF00';
+        let secondaryAccent = '#FF0000';
+        let brushColor = '#CCFF00';
+        let colorOverrides = {};
+        let densityVal = 1.0;
+
+        const inputs = {
+            cols: document.getElementById('inp-cols'),
+            size: document.getElementById('inp-size'),
+            round: document.getElementById('inp-round'),
+            scale: document.getElementById('inp-scale'),
+            density: document.getElementById('inp-density'),
+            color: document.getElementById('inp-color')
+        };
+
+        const uiValues = {
+            cols: document.getElementById('val-cols'),
+            size: document.getElementById('val-size'),
+            round: document.getElementById('val-round'),
+            scale: document.getElementById('val-scale'),
+            density: document.getElementById('val-density'),
+            color: document.getElementById('val-color'),
+            seed: document.getElementById('ui-seed')
+        };
+
+        inputs.cols.oninput = (e) => { cols = parseInt(e.target.value); uiValues.cols.innerText = cols; };
+        inputs.size.oninput = (e) => { size = parseInt(e.target.value); uiValues.size.innerText = size; };
+        inputs.round.oninput = (e) => { roundness = parseFloat(e.target.value); uiValues.round.innerText = roundness.toFixed(2); };
+        inputs.scale.oninput = (e) => { scaleVal = parseFloat(e.target.value); uiValues.scale.innerText = scaleVal.toFixed(2); };
+        inputs.density.oninput = (e) => { densityVal = parseFloat(e.target.value); uiValues.density.innerText = Math.round(densityVal * 100) + '%'; };
+        inputs.color.oninput = (e) => {
+            colorMode = colorModes[parseInt(e.target.value)];
+            uiValues.color.innerText = colorMode;
+        };
+
+        function updateMode(m) {
+            mode = m;
+            document.getElementById('mode-logo').classList.toggle('active', m === 'logo');
+            document.getElementById('mode-pattern').classList.toggle('active', m === 'pattern');
+        }
+
+        function setPrimaryAccent(c) {
+            primaryAccent = c;
+            document.getElementById('p-accent-black').classList.toggle('active', c === '#000000');
+            document.getElementById('p-accent-neon').classList.toggle('active', c === '#CCFF00');
+            document.getElementById('p-accent-red').classList.toggle('active', c === '#FF0000');
+            document.getElementById('p-accent-blue').classList.toggle('active', c === '#0000FF');
+        }
+
+        function setSecondaryAccent(c) {
+            secondaryAccent = c;
+            document.getElementById('s-accent-black').classList.toggle('active', c === '#000000');
+            document.getElementById('s-accent-neon').classList.toggle('active', c === '#CCFF00');
+            document.getElementById('s-accent-red').classList.toggle('active', c === '#FF0000');
+            document.getElementById('s-accent-blue').classList.toggle('active', c === '#0000FF');
+        }
+
+        function setBrush(c) {
+            brushColor = c;
+            document.getElementById('brush-black').classList.toggle('active', c === '#000000');
+            document.getElementById('brush-neon').classList.toggle('active', c === '#CCFF00');
+            document.getElementById('brush-red').classList.toggle('active', c === '#FF0000');
+            document.getElementById('brush-blue').classList.toggle('active', c === '#0000FF');
+            document.getElementById('brush-clear').classList.toggle('active', c === 'clear');
+        }
+
+        function toggleSymbol(id) {
+            let idx = activeSymbols.indexOf(id);
+            if (idx > -1) {
+                if (activeSymbols.length > 1) {
+                    activeSymbols.splice(idx, 1);
+                    document.getElementById('sym-' + id).classList.remove('active');
+                }
+            } else {
+                activeSymbols.push(id);
+                document.getElementById('sym-' + id).classList.add('active');
+            }
+        }
+
+        function remix() {
+            seed = Math.floor(Math.random() * 999999);
+            uiValues.seed.innerText = seed;
+            colorOverrides = {};
+        }
+
+        function exportPNG() {
+            saveCanvas(canvas, 'c2p_logo_' + seed, 'png');
+        }
+
+        function exportSVG() {
+            save('c2p_logo_vector_' + seed + '.svg');
+        }
+
+        function setup() {
+            canvas = createCanvas(800, 800, SVG);
+            canvas.parent('canvas-container');
+            rectMode(CENTER);
+            angleMode(DEGREES);
+            noStroke();
+            uiValues.seed.innerText = seed;
+        }
+
+        function draw() {
+            randomSeed(seed);
+            background(244, 244, 242);
+
+            if (mode === 'logo') {
+                drawLogoGrid();
+            } else {
+                drawPatternGrid();
+            }
+        }
+
+        function drawLogoGrid() {
+            push();
+            translate(width / 2, height / 2);
+            let totalW = (cols - 1) * size;
+            translate(-totalW / 2, -totalW / 2);
+
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < cols; j++) {
+                    let d = dist(i, j, (cols - 1) / 2, (cols - 1) / 2);
+                    if (d < cols / 2) {
+                        renderModule(i * size, j * size, size, i, j);
+                    }
+                }
+            }
+            pop();
+        }
+
+        function drawPatternGrid() {
+            let startX = (width % size) / 2;
+            let startY = (height % size) / 2;
+            let colsPattern = Math.ceil(width / size) + 1;
+            let rowsPattern = Math.ceil(height / size) + 1;
+
+            for (let i = -1; i < colsPattern; i++) {
+                for (let j = -1; j < rowsPattern; j++) {
+                    let px = startX + i * size;
+                    let py = startY + j * size;
+                    renderModule(px, py, size, i, j);
+                }
+            }
+        }
+
+        function renderModule(x, y, s, gridI, gridJ) {
+            push();
+            translate(x, y);
+            scale(scaleVal);
+
+            let rRenderRaw = random();
+            let rTypeRaw = random();
+            let rRotRaw = random();
+            let rColRaw = random();
+
+            let overrideKey = mode + '_' + gridI + '_' + gridJ;
+            let hasOverride = colorOverrides[overrideKey] !== undefined;
+
+            if (!hasOverride && rRenderRaw > densityVal) {
+                pop();
+                return;
+            }
+
+            let activeSymbolsSorted = [...activeSymbols].sort();
+            let typeIndex = floor(rTypeRaw * activeSymbolsSorted.length);
+            let type = activeSymbolsSorted[typeIndex];
+
+            let rot = floor(rRotRaw * 4) * 90;
+            let corner = roundness * s * 0.5;
+
+            let currentPalette = ['#000000'];
+            if (colorMode === 'PURE') currentPalette = [primaryAccent];
+            if (colorMode === 'MIX 1') currentPalette = ['#000000', '#000000', primaryAccent];
+            if (colorMode === 'MIX 2') currentPalette = ['#000000', '#000000', primaryAccent, secondaryAccent];
+            if (colorMode === 'ALL') currentPalette = ['#000000', '#000000', '#CCFF00', '#FF0000', '#0000FF'];
+
+            let col = currentPalette[floor(rColRaw * currentPalette.length)];
+
+            if (colorOverrides[overrideKey]) {
+                col = colorOverrides[overrideKey];
+            }
+
+            fill(col);
+            noStroke();
+            rotate(rot);
+
+            switch (type) {
+                case 0:
+                    rect(0, 0, s, s, corner);
+                    break;
+                case 1:
+                    arc(-s / 2, -s / 2, s * 2, s * 2, 0, 90, PIE);
+                    break;
+                case 2:
+                    ellipse(0, 0, s, s);
+                    break;
+                case 3:
+                    arc(-s / 2, -s / 2, s, s, 0, 90, PIE);
+                    arc(s / 2, s / 2, s, s, 180, 270, PIE);
+                    break;
+                case 4:
+                    rect(0, 0, s, s * 0.35, corner);
+                    rect(0, 0, s * 0.35, s, corner);
+                    break;
+            }
+            pop();
+        }
+
+        function mousePressed() {
+            if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+                if (mode === 'logo') {
+                    let totalW = (cols - 1) * size;
+                    let startX = width / 2 - totalW / 2;
+                    let startY = height / 2 - totalW / 2;
+
+                    let i = Math.round((mouseX - startX) / size);
+                    let j = Math.round((mouseY - startY) / size);
+
+                    if (i >= 0 && i < cols && j >= 0 && j < cols) {
+                        let d = dist(i, j, (cols - 1) / 2, (cols - 1) / 2);
+                        if (d < cols / 2) {
+                            let key = 'logo_' + i + '_' + j;
+                            if (brushColor === 'clear') delete colorOverrides[key];
+                            else colorOverrides[key] = brushColor;
+                        }
+                    }
+                } else {
+                    let startX = (width % size) / 2;
+                    let startY = (height % size) / 2;
+
+                    let i = Math.round((mouseX - startX) / size);
+                    let j = Math.round((mouseY - startY) / size);
+
+                    let key = 'pattern_' + i + '_' + j;
+                    if (brushColor === 'clear') delete colorOverrides[key];
+                    else colorOverrides[key] = brushColor;
+                }
+            }
+        }
+    </script>
+    <script type="module" src="/src/i18n.js"></script>
+</body>
+</html>

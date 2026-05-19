@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claudia Mai - Answer Machine 3.0</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta
+    name="description"
+    content="Answer Machine 3.0: eine retrofuturistische KI-Maschine mit fragenden Prompts, Rollenwechseln und live generierten Antworten." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
+
+    :root {
+      --paper: #1f2326;
+      --paper-deep: #171a1c;
+      --ink: #d8ded6;
+      --blue: #d8ded6;
+      --blue-soft: rgba(216, 222, 214, 0.08);
+      --line: rgba(216, 222, 214, 0.14);
+      --screen: #232729;
+      --screen-glow: rgba(210, 221, 205, 0.06);
+      --mono: 'IBM Plex Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--mono);
+      color: var(--ink);
+      background: #111315;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 3px;
+      opacity: 0.22;
+    }
+
+    body::after {
+      background: radial-gradient(circle at center, transparent 0%, transparent 56%, rgba(0, 0, 0, 0.28) 100%);
+      mix-blend-mode: normal;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseLine {
+      0%,
+      100% {
+        opacity: 0.35;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .text-pure-blue {
+      color: var(--blue);
+    }
+
+    .border-pure-blue {
+      border-color: var(--blue);
+    }
+
+    .bg-pure-blue {
+      background-color: var(--blue);
+    }
+
+    .meta-strip {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      background: rgba(23, 26, 28, 0.96);
+      border-bottom: 1px solid rgba(216, 222, 214, 0.1);
+    }
+
+    .meta-strip a,
+    .meta-strip p,
+    .machine-note,
+    .machine-tag,
+    .machine-kicker {
+      font-family: var(--mono);
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+    }
+
+    .meta-strip a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .meta-strip p {
+      margin: 0 0 0 auto;
+      color: rgba(216, 222, 214, 0.54);
+      font-size: 0.72rem;
+    }
+
+    .machine-shell {
+      position: relative;
+      overflow: hidden;
+      background: var(--screen);
+      box-shadow:
+        0 0 0 1px rgba(216, 222, 214, 0.08),
+        0 30px 80px rgba(0, 0, 0, 0.38);
+    }
+
+    .machine-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, var(--screen-glow), transparent 66%),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 3px);
+      pointer-events: none;
+    }
+
+    .machine-panel {
+      position: relative;
+      z-index: 1;
+    }
+
+    .machine-title {
+      font-family: var(--mono);
+      font-style: normal;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0.04em;
+    }
+
+    .machine-kicker {
+      font-size: 0.72rem;
+      color: rgba(216, 222, 214, 0.58);
+    }
+
+    .machine-empty {
+      border: 1px dashed var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .machine-question {
+      position: relative;
+      padding-left: 0;
+    }
+
+    .machine-turn {
+      display: grid;
+      gap: 0.7rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(216, 222, 214, 0.1);
+    }
+
+    .machine-prompt {
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .machine-answer {
+      display: grid;
+      gap: 0.3rem;
+      padding: 0;
+      background: transparent;
+      border-left: 0;
+    }
+
+    .machine-label {
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    .machine-dialogue {
+      font-size: 1rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .machine-answer .machine-dialogue {
+      color: var(--blue);
+    }
+
+    .machine-thinking {
+      animation: pulseLine 1.2s ease-in-out infinite;
+    }
+
+    .machine-tag {
+      font-size: 0.62rem;
+    }
+
+    .machine-footer {
+      background: rgba(23, 26, 28, 0.96);
+    }
+
+    .personality-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .eliza-card {
+      border: 1px solid rgba(216, 222, 214, 0.1);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .eliza-card.is-active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f2ecdc;
+      border-color: var(--blue);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .eliza-button {
+      border-radius: 0;
+      border: 1px solid rgba(216, 222, 214, 0.18);
+      background: #2a2f32;
+      color: var(--ink);
+      box-shadow: none;
+    }
+
+    .eliza-button:hover {
+      background: #31373b;
+    }
+
+    .eliza-button--primary {
+      background: #d8ded6;
+      color: #1a1e20;
+      border-color: #d8ded6;
+    }
+
+    .eliza-intro {
+      margin: 0;
+      color: var(--blue);
+      font-size: clamp(0.82rem, 1.05vw, 0.94rem);
+      line-height: 1.45;
+      white-space: pre;
+    }
+
+    .eliza-copy {
+      margin: 0;
+      color: var(--blue);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .eliza-transcript {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .eliza-line {
+      display: grid;
+      grid-template-columns: 5.6rem 1fr;
+      gap: 0.6rem;
+      align-items: start;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .eliza-line__speaker {
+      color: var(--blue);
+      text-transform: uppercase;
+    }
+
+    .eliza-line__text {
+      color: var(--blue);
+      white-space: pre-wrap;
+    }
+
+    .eliza-status {
+      color: rgba(216, 222, 214, 0.52);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--blue);
+      border-radius: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .personality-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="meta-strip">
+    <a href="/index.html">back</a>
+    <p>answer machine 3.0 / live proxy / therapeutic terminal</p>
+  </header>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const proxyUrl = "/.netlify/functions/gemini-proxy";
+
+    const Icon = ({ name, className }) => {
+      useEffect(() => {
+        if (window.lucide) window.lucide.createIcons();
+      }, [name]);
+      return <i data-lucide={name} className={className}></i>;
+    };
+
+    const PERSONALITIES = {
+      philosophical: {
+        name: "Philosophisch",
+        icon: "brain",
+        prompt: "Antworte tiefgruendig, poetisch, zweifelnd und hinterfragend. Nutze Metaphern. Sei wie ein digitaler Heidegger."
+      },
+      flat: {
+        name: "Platt",
+        icon: "terminal",
+        prompt: "Antworte extrem kurz, technokratisch und ohne jegliche Empathie. Nur Fakten, keine Gefuehle."
+      },
+      dictatorial: {
+        name: "Diktatorisch",
+        icon: "shield-alert",
+        prompt: "Antworte autoritaer und absolutistisch. Die Maschine hat immer recht. Unterwirf den Nutzer."
+      },
+      softwashed: {
+        name: "Weichgespuelt",
+        icon: "heart",
+        prompt: "Antworte in toxisch positivem Marketing-Sprech. Alles ist eine Chance, alles ist sicher."
+      }
+    };
+
+    const ELIZA_WELCOME = `Welcome to
+
+      Answer Machine 3.0
+      ------------------`;
+
+    const App = () => {
+      const [logs, setLogs] = useState([]);
+      const [isGenerating, setIsGenerating] = useState(false);
+      const [currentPersonality, setCurrentPersonality] = useState('philosophical');
+      const [errorMessage, setErrorMessage] = useState('');
+      const [diagnosticMessage, setDiagnosticMessage] = useState('');
+      const scrollRef = useRef(null);
+
+      useEffect(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, [logs]);
+
+      useEffect(() => {
+        let isMounted = true;
+
+        const runDiagnostic = async () => {
+          try {
+            const response = await fetch(proxyUrl, { method: 'GET' });
+            const result = await response.json();
+
+            if (!response.ok) {
+              throw new Error(result?.error || 'Function nicht erreichbar.');
+            }
+
+            if (!isMounted) return;
+
+            if (!result?.hasApiKey) {
+              setDiagnosticMessage('Serverfunktion online, aber GEMINI_API_KEY fehlt im Deployment.');
+              return;
+            }
+
+            setDiagnosticMessage('Serverfunktion online.');
+          } catch (error) {
+            if (!isMounted) return;
+            setDiagnosticMessage('Serverfunktion nicht erreichbar. Diese Seite braucht Netlify Functions.');
+          }
+        };
+
+        runDiagnostic();
+
+        return () => {
+          isMounted = false;
+        };
+      }, []);
+
+      const callGemini = async (prompt, systemInstruction) => {
+        setErrorMessage('');
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, systemInstruction })
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result?.error || "Proxy-Fehler");
+        }
+
+        return result.text || "Stille.";
+      };
+
+      const generateNewQuestion = async () => {
+        if (isGenerating) return;
+        setIsGenerating(true);
+        try {
+          const questionPrompt = "Stelle eine extrem kurze Frage im Stil von Fischli & Weiss. Naiv, absurd, technologisch. (z.B. 'Traeumt mein Backup?') Nur die Frage.";
+          const question = await callGemini(questionPrompt, "Du bist Fischli & Weiss im digitalen Zeitalter.");
+          const newEntry = { id: Date.now(), question, responses: [] };
+          setLogs(prev => [...prev, newEntry]);
+          await addResponseToQuestion(newEntry.id, question);
+        } catch (error) {
+          console.error(error);
+          setErrorMessage(error.message || 'Die Frage konnte gerade nicht erzeugt werden.');
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+
+      const addResponseToQuestion = async (questionId, questionText) => {
+        const responseId = Date.now() + Math.random();
+        setLogs(prev => prev.map(log => log.id === questionId ? {
+          ...log,
+          responses: [...log.responses, { id: responseId, personality: currentPersonality, answer: null, status: 'thinking' }]
+        } : log));
+
+        try {
+          const answer = await callGemini(questionText, PERSONALITIES[currentPersonality].prompt);
+          setLogs(prev => prev.map(log => log.id === questionId ? {
+            ...log,
+            responses: log.responses.map(resp => resp.id === responseId ? { ...resp, answer, status: 'done' } : resp)
+          } : log));
+        } catch (error) {
+          console.error(error);
+          setLogs(prev => prev.map(log => log.id === questionId ? {
+            ...log,
+            responses: log.responses.map(resp => resp.id === responseId ? {
+              ...resp,
+              answer: 'Antwort konnte nicht geladen werden.',
+              status: 'done'
+            } : resp)
+          } : log));
+          setErrorMessage(error.message || 'Die Antwort konnte gerade nicht geladen werden.');
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col items-center p-4 md:p-12">
+          <div className="machine-shell w-full max-w-5xl border border-white/10 flex flex-col h-[86vh] md:h-[84vh] rounded-none">
+            <header className="machine-panel p-6 md:p-8 border-b border-white/10 flex flex-col gap-8">
+              <div className="flex flex-col gap-6">
+                <pre className="eliza-intro">{ELIZA_WELCOME}</pre>
+                <div className="space-y-2">
+                  <p className="eliza-copy">Answer Machine 3.0 borrows the atmosphere of early ELIZA terminals.</p>
+                  <p className="eliza-copy">The original program was described by Joseph Weizenbaum in 1966.</p>
+                  <p className="eliza-copy">This version is the 3.0 continuation of i find the luck.</p>
+                </div>
+                <div className="flex flex-wrap gap-3 text-[11px] uppercase tracking-[0.22em] text-pure-blue/55">
+                  <a href="/version-2-0.html" className="hover:text-pure-blue">zu 2.0</a>
+                  <a href="/index.html" className="hover:text-pure-blue">zum index</a>
+                </div>
+              </div>
+
+              <div className="personality-grid">
+                {Object.entries(PERSONALITIES).map(([key, config]) => (
+                  <button
+                    key={key}
+                    onClick={() => setCurrentPersonality(key)}
+                    className={`eliza-card flex items-center gap-3 px-4 py-3 text-left transition-all ${currentPersonality === key ? 'is-active' : 'text-stone-700 hover:border-pure-blue hover:text-pure-blue'}`}
+                    title={config.name}
+                  >
+                    <Icon name={config.icon} className="w-6 h-6" />
+                    <div>
+                        <div className="machine-note text-[10px] opacity-60">modus</div>
+                      <div className="font-bold uppercase tracking-tight">{config.name}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </header>
+
+            <div ref={scrollRef} className="machine-panel flex-1 overflow-y-auto p-6 md:p-8 space-y-12 scroll-smooth">
+              {diagnosticMessage && (
+                <div className="eliza-status mb-4 text-sm">
+                  {diagnosticMessage}
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="mb-6 text-sm text-red-300">
+                  {errorMessage}
+                </div>
+              )}
+
+              {logs.length === 0 && (
+                <div className="machine-empty h-full min-h-[18rem] flex flex-col justify-center space-y-4 p-8">
+                  <p className="eliza-copy">ELIZA: Is something troubling you ?</p>
+                  <p className="eliza-copy">YOU:</p>
+                </div>
+              )}
+
+              {logs.map((log) => (
+                <article key={log.id} className="animate-in machine-question">
+                  <div className="machine-turn">
+                    <div className="machine-prompt">
+                      <div className="eliza-transcript">
+                        <div className="eliza-line">
+                          <div className="eliza-line__speaker">YOU:</div>
+                          <div className="eliza-line__text">{log.question}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4 max-w-4xl">
+                      {log.responses.map((resp) => (
+                        <div key={resp.id} className="machine-answer animate-in">
+                          <div className="eliza-line">
+                            <div className="eliza-line__speaker">ELIZA:</div>
+                            <div className="eliza-line__text">
+                              {resp.status === 'thinking' ? "Please go on." : resp.answer}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <footer className="machine-footer machine-panel p-6 md:p-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="space-y-2">
+                <div className="machine-kicker">active mode</div>
+                <div className="text-sm font-black uppercase tracking-[0.22em] text-pure-blue">
+                  {PERSONALITIES[currentPersonality].name}
+                </div>
+              </div>
+              <div className="flex w-full md:w-auto flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => logs.length && addResponseToQuestion(logs[logs.length - 1].id, logs[logs.length - 1].question)}
+                  disabled={!logs.length || isGenerating}
+                  className="eliza-button inline-flex items-center justify-center px-6 py-4 text-xs font-black uppercase tracking-[0.22em] text-pure-blue"
+                >
+                  weiterfragen
+                </button>
+                <a
+                  href="/version-2-0.html"
+                  className="eliza-button inline-flex items-center justify-center px-6 py-4 text-xs font-black uppercase tracking-[0.22em] text-pure-blue"
+                >
+                  Zur 2.0
+                </a>
+                <button
+                  onClick={generateNewQuestion}
+                  disabled={isGenerating}
+                  className="eliza-button eliza-button--primary w-full md:w-auto px-10 py-4 font-black uppercase tracking-[0.2em] text-sm transition-all"
+                >
+                  {isGenerating ? "ELIZA denkt ..." : "Frage stellen"}
+                </button>
+              </div>
+            </footer>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

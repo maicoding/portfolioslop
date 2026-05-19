@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLOP-O-MATIC // TOTAL SATIATION V9</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+
+<body class="slop-body">
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="slop-app">
+    <aside class="control-panel">
+      <header class="control-panel__header">
+        <p class="control-panel__eyebrow">standalone tool / netlify ready</p>
+        <h1>SLOP-O-MATIC</h1>
+        <p class="control-panel__version">The Great Satiation // v9.0.0 / local hallucination engine</p>
+      </header>
+
+      <div class="control-stack">
+        <label class="field">
+          <span>Format / Platform</span>
+          <select id="platform-select"></select>
+        </label>
+
+        <label class="field">
+          <span>Head Source</span>
+          <select id="asset-select">
+            <option value="archive">AI archive</option>
+            <option value="output">Output fragment</option>
+            <option value="mix">Random mix</option>
+          </select>
+        </label>
+
+        <button id="full-auto-btn" class="btn btn--accent">vollautomatischer slop</button>
+
+        <label class="field">
+          <span>Visual Prompt</span>
+          <textarea id="prompt-input" rows="3"></textarea>
+        </label>
+
+        <label class="field">
+          <span>Headline</span>
+          <input id="headline-input" type="text" />
+        </label>
+
+        <label class="field">
+          <span>Caption</span>
+          <textarea id="caption-input" rows="3"></textarea>
+        </label>
+
+        <div class="action-group">
+          <button id="manual-gen-btn" class="btn">manuell rendern</button>
+          <button id="export-btn" class="btn btn--light">export png</button>
+        </div>
+
+        <div class="tool-links">
+          <a href="/version-3.html">zurueck zu version 3</a>
+          <a href="/social-generator.html">social motion tool</a>
+        </div>
+      </div>
+
+      <footer class="control-panel__footer">
+        AI_STATE: CREATIVE_OVERFLOW<br>
+        MODE: LOCAL_STATIC_DEPLOY<br>
+        HUMANS_REPLACED: UNKNOWN<br>
+        VOID SOLUTIONS / 2026
+      </footer>
+    </aside>
+
+    <main class="preview-area">
+      <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loader-ring"></div>
+        <p id="loading-text">Optimiere Sinnlosigkeit...</p>
+      </div>
+
+      <div class="preview-shell">
+        <div class="preview-shell__meta">
+          <p>Canvas State</p>
+          <strong id="meta-size">1080 x 1350</strong>
+        </div>
+        <div id="ad-canvas-container" class="ad-canvas-container">
+          <canvas id="main-canvas"></canvas>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/src/slop-o-matic.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

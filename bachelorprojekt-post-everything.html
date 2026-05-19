@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Everything</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --bg-deep: #ebe3d7;
+        --surface: rgba(255, 255, 255, 0.82);
+        --ink: #111111;
+        --muted: rgba(17, 17, 17, 0.66);
+        --line: rgba(17, 17, 17, 0.12);
+        --line-strong: rgba(17, 17, 17, 0.24);
+        --accent: #1a31d4;
+        --sans: "Space Grotesk", Arial, sans-serif;
+        --serif: "Space Grotesk", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      *::selection {
+        background: var(--ink);
+        color: #f8f5ef;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: var(--sans);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.86), transparent 28%),
+          radial-gradient(circle at 84% 16%, rgba(26, 49, 212, 0.08), transparent 22%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.12;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+        background-size: 100% 100%, 38px 38px;
+        mix-blend-mode: screen;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a,
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      .mono,
+      .eyebrow,
+      .site-header a,
+      .site-header button,
+      .site-header p,
+      .hero-meta dt,
+      .section-label,
+      .gallery-card__index,
+      .gallery-card__open,
+      .modal-top,
+      .footer {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 1.2rem;
+        padding: 1rem 1.4rem 0.9rem;
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(14px);
+        background: rgba(245, 241, 234, 0.84);
+      }
+
+      .site-header__group,
+      .site-header__meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .site-header__nav {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+      }
+
+      .site-header a,
+      .site-header button {
+        border: 0;
+        background: none;
+        padding: 0;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .site-header a:hover,
+      .site-header a:focus-visible,
+      .site-header button:hover,
+      .site-header button:focus-visible,
+      .hero-actions a:hover,
+      .hero-actions a:focus-visible,
+      .gallery-card:hover .gallery-card__open,
+      .gallery-card:focus-visible .gallery-card__open,
+      .modal-close:hover,
+      .modal-close:focus-visible {
+        color: var(--accent);
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+      }
+
+      .shell {
+        width: min(calc(100% - 2rem), 1380px);
+        margin: 0 auto;
+        padding: 1.5rem 0 2rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.28fr);
+        gap: 1.6rem;
+        align-items: start;
+        min-height: auto;
+      }
+
+      .hero-copy,
+      .hero-stage {
+        animation: rise 860ms cubic-bezier(0.19, 1, 0.22, 1) both;
+      }
+
+      .hero-stage {
+        animation-delay: 120ms;
+      }
+
+      .hero-copy {
+        display: grid;
+        gap: 1rem;
+        padding-top: 0.45rem;
+      }
+
+      .hero-copy h1,
+      .section-heading h2,
+      .concept-panel h3 {
+        margin: 0;
+        letter-spacing: -0.06em;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(4rem, 8vw, 7.5rem);
+        line-height: 0.86;
+      }
+
+      .hero-lead {
+        max-width: 27rem;
+        margin: 0;
+        font-family: var(--serif);
+        font-size: clamp(1.45rem, 2.15vw, 2rem);
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1.02;
+      }
+
+      .hero-intro {
+        display: grid;
+        gap: 0.9rem;
+        max-width: 31rem;
+      }
+
+      .hero-intro p,
+      .hero-meta dd,
+      .section-heading p,
+      .concept-panel p,
+      .gallery-note p,
+      .footer p {
+        margin: 0;
+        line-height: 1.62;
+        color: var(--muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+        padding-top: 0.2rem;
+      }
+
+      .hero-actions a {
+        width: fit-content;
+        text-decoration: none;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 0.2rem;
+        font-weight: 700;
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem 1.2rem;
+        padding-top: 0.3rem;
+        border-top: 1px solid var(--line-strong);
+      }
+
+      .hero-meta div {
+        display: grid;
+        gap: 0.18rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .hero-meta dt {
+        color: var(--ink);
+      }
+
+      .hero-meta dd {
+        margin: 0;
+      }
+
+      .hero-stage {
+        position: sticky;
+        top: 5.2rem;
+        min-height: 0;
+        display: grid;
+        align-content: start;
+        padding: 0;
+      }
+
+      .hero-stage__deck {
+        position: relative;
+        min-height: 0;
+        padding: 0;
+      }
+
+      .hero-stage__backdrop {
+        display: none;
+      }
+
+      .hero-stage__backdrop figure {
+        position: absolute;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid rgba(17, 17, 17, 0.08);
+        opacity: 0.22;
+        filter: grayscale(1);
+      }
+
+      .hero-stage__backdrop img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .hero-stage__backdrop figure:nth-child(1) {
+        top: 0;
+        left: 58%;
+        width: 14rem;
+        aspect-ratio: 0.76;
+        transform: translateX(-50%);
+      }
+
+      .hero-stage__backdrop figure:nth-child(2) {
+        top: 18%;
+        right: 2.5rem;
+        width: 11rem;
+        aspect-ratio: 0.76;
+      }
+
+      .hero-stage__backdrop figure:nth-child(3) {
+        bottom: 0;
+        left: 54%;
+        width: 14rem;
+        aspect-ratio: 0.78;
+        transform: translateX(-50%);
+      }
+
+      .hero-stage__main {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        margin: 0;
+        padding: 0.85rem;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+      }
+
+      .hero-stage__frame {
+        position: relative;
+        margin: 0;
+        border: 0;
+        background: transparent;
+      }
+
+      .hero-stage__frame img {
+        width: 100%;
+        aspect-ratio: 1.08;
+        object-fit: cover;
+      }
+
+      .hero-stage__float {
+        display: none;
+      }
+
+      .hero-stage__caption {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 1rem;
+        align-items: center;
+        padding: 0.8rem 0 0;
+        color: var(--ink);
+        border-top: 1px solid var(--line);
+      }
+
+      .hero-stage__caption p {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      .detail-section {
+        display: grid;
+        grid-template-columns: minmax(11rem, 0.24fr) minmax(0, 1fr);
+        gap: 1.2rem;
+        padding: 1.15rem 0 2.7rem;
+        border-top: 1px solid var(--line-strong);
+      }
+
+      .section-heading {
+        display: grid;
+        gap: 0.5rem;
+        max-width: 44rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .section-heading h2 {
+        font-size: clamp(2.4rem, 4.6vw, 4.4rem);
+        line-height: 0.93;
+      }
+
+      .concept-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .concept-panel {
+        display: grid;
+        gap: 0.65rem;
+        align-content: start;
+        padding-top: 0.95rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .gallery-layout {
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      .gallery-note {
+        max-width: 40rem;
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
+      .gallery-card {
+        position: relative;
+        display: grid;
+        gap: 0.6rem;
+        padding: 0.7rem;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .gallery-card:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 4px;
+      }
+
+      .gallery-card__media {
+        overflow: hidden;
+        background: rgba(17, 17, 17, 0.06);
+      }
+
+      .gallery-card__media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 460ms ease;
+      }
+
+      .gallery-card:hover img,
+      .gallery-card:focus-visible img {
+        transform: scale(1.03);
+      }
+
+      .gallery-card__meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.8rem;
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .gallery-card--feature {
+        grid-column: span 2;
+      }
+
+      .gallery-card--feature .gallery-card__media {
+        aspect-ratio: 1.04;
+      }
+
+      .gallery-card--portrait .gallery-card__media {
+        aspect-ratio: 0.78;
+      }
+
+      .gallery-card--landscape .gallery-card__media {
+        aspect-ratio: 1.25;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.95rem 0 0.2rem;
+        border-top: 1px solid var(--line-strong);
+      }
+
+      .modal[hidden] {
+        display: none;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        padding: 1.2rem;
+        background: rgba(9, 9, 9, 0.82);
+        backdrop-filter: blur(18px);
+      }
+
+      .modal-inner {
+        width: min(100%, 1200px);
+        margin: 0 auto;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.92);
+      }
+
+      .modal-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.85rem;
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .modal-close {
+        border: 0;
+        background: none;
+        cursor: pointer;
+      }
+
+      .modal-image {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .modal-caption {
+        margin: 0.75rem 0 0;
+        color: rgba(255, 255, 255, 0.66);
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(2.4rem);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-stage {
+          position: relative;
+          top: auto;
+          min-height: 0;
+          padding-top: 0;
+        }
+
+        .detail-section {
+          grid-template-columns: 1fr;
+        }
+
+        .section-label {
+          margin-bottom: -0.4rem;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .site-header {
+          grid-template-columns: 1fr;
+          justify-items: start;
+          gap: 0.7rem;
+        }
+
+        .site-header__nav {
+          justify-content: flex-start;
+          flex-wrap: wrap;
+        }
+
+        .shell {
+          width: min(calc(100% - 1.4rem), 1380px);
+          padding: 0.8rem 0 1.5rem;
+        }
+
+        .concept-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .gallery-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .gallery-card--feature {
+          grid-column: span 2;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .hero-copy h1 {
+          font-size: clamp(3rem, 15vw, 4.8rem);
+        }
+
+        .hero-lead {
+          max-width: none;
+          font-size: 1.12rem;
+        }
+
+        .hero-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-stage__deck {
+          min-height: 0;
+          padding: 0 0 2rem;
+        }
+
+        .hero-stage__main {
+          padding: 0.65rem;
+        }
+
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="site-header__group">
+          <a href="/index.html">Claudia Mai</a>
+        </div>
+
+        <nav class="site-header__nav" aria-label="Projekt-Navigation">
+          <a href="#concept" data-i18n="navConcept">Konzept</a>
+          <a href="#gallery" data-i18n="navGallery">Galerie</a>
+        </nav>
+
+        <div class="site-header__meta">
+          <p id="local-time">Berlin 00:00</p>
+          <button type="button" id="lang-toggle">EN</button>
+          <a href="mailto:clmai@me.com">Contact</a>
+        </div>
+      </header>
+
+      <main class="shell">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">Bachelor Thesis / 2022 / Design Research</p>
+            <h1>Post Everything</h1>
+            <p class="hero-lead" data-i18n="heroText">
+              Eine Untersuchung regelbasierter Kreativität: 250 Begriffe mit dem Präfix "post", gestaltet unter maschinellen Bedingungen mit strikt zufällig definierten Parametern.
+            </p>
+
+            <div class="hero-intro" id="hero-intro"></div>
+
+            <div class="hero-actions">
+              <a href="#concept" data-i18n="heroActionConcept">Konzept lesen</a>
+              <a href="#gallery" data-i18n="heroActionGallery">Galerie ansehen</a>
+            </div>
+
+            <dl class="hero-meta">
+              <div>
+                <dt data-i18n="metaYearLabel">Jahr</dt>
+                <dd>2022</dd>
+              </div>
+              <div>
+                <dt data-i18n="metaTypeLabel">Typ</dt>
+                <dd data-i18n="metaTypeValue">Bachelorarbeit</dd>
+              </div>
+              <div>
+                <dt data-i18n="metaFieldLabel">Feld</dt>
+                <dd data-i18n="fieldLine">Designforschung / Experimental Design</dd>
+              </div>
+              <div>
+                <dt data-i18n="metaBookLabel">Buch</dt>
+                <dd data-i18n="bookLine">300 Seiten</dd>
+              </div>
+              <div>
+                <dt data-i18n="metaRulesLabel">Anleitung</dt>
+                <dd data-i18n="rulesLine">1.120 Seiten</dd>
+              </div>
+              <div>
+                <dt data-i18n="metaParametersLabel">Parameter</dt>
+                <dd data-i18n="parametersLine">434 pro Begriff</dd>
+              </div>
+            </dl>
+          </div>
+
+          <aside class="hero-stage">
+            <div class="hero-stage__deck">
+              <div class="hero-stage__backdrop" aria-hidden="true">
+                <figure><img src="/post-everything-gallery/posteverything04.png" alt="" /></figure>
+                <figure><img src="/post-everything-gallery/posteverything08.png" alt="" /></figure>
+                <figure><img src="/post-everything-gallery/posteverything13.png" alt="" /></figure>
+              </div>
+
+              <div class="hero-stage__main">
+                <div class="hero-stage__frame">
+                  <img src="/post-everything-gallery/posteverything01.png" alt="Post Everything Preview" />
+                  <figure class="hero-stage__float hero-stage__float--one">
+                    <img src="/post-everything-gallery/posteverything06.png" alt="" />
+                  </figure>
+                  <figure class="hero-stage__float hero-stage__float--two">
+                    <img src="/post-everything-gallery/posteverything10.png" alt="" />
+                  </figure>
+                  <figure class="hero-stage__float hero-stage__float--three">
+                    <img src="/post-everything-gallery/posteverything15.png" alt="" />
+                  </figure>
+                </div>
+
+                <div class="hero-stage__caption">
+                  <span class="mono">01</span>
+                  <p data-i18n="stageCaption">
+                    Regelwerk, Buch und visuelle Untersuchung werden hier als ein einziges Projektobjekt gelesen.
+                  </p>
+                  <span class="mono">PE</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="detail-section" id="concept">
+          <div class="section-label" data-i18n="conceptKicker">Konzept</div>
+          <div>
+            <div class="section-heading">
+              <h2 data-i18n="conceptTitle">Das Projekt macht maschinische Bedingungen nicht nur zum Thema, sondern zur Methode.</h2>
+              <p data-i18n="conceptIntro">
+                Der Text bleibt absichtlich ausfuehrlich, damit das Konzept direkt auf der Seite lesbar ist und nicht erst hinter einer zweiten Ebene beginnt.
+              </p>
+            </div>
+            <div class="concept-grid" id="concept-stack"></div>
+          </div>
+        </section>
+
+        <section class="detail-section" id="gallery">
+          <div class="section-label" data-i18n="galleryKicker">Galerie</div>
+          <div class="gallery-layout">
+            <div class="section-heading gallery-note">
+              <h2 data-i18n="galleryTitle">Das Material wird als visuelles Lexikon gezeigt, nicht als neutrale Dokumentation.</h2>
+              <p data-i18n="galleryIntro">
+                Die Bildflaechen bleiben klickbar und gross genug, um einzelne Entscheidungen, Verdichtungen und Unterschiede im Regelwerk sichtbar zu machen.
+              </p>
+            </div>
+            <div class="gallery-grid" id="gallery-grid"></div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          <p>© 2022 Post Everything</p>
+          <p data-i18n="footerLabel">Designforschung / Regelbasierte Kreativität</p>
+        </footer>
+      </main>
+    </div>
+
+    <div class="modal" id="image-modal" hidden>
+      <div class="modal-inner">
+        <div class="modal-top mono">
+          <span id="modal-count">01 / 15</span>
+          <button type="button" class="modal-close" id="modal-close">Close</button>
+        </div>
+        <div class="modal-image">
+          <img id="modal-image" src="" alt="" />
+        </div>
+        <p class="modal-caption mono" id="modal-caption"></p>
+      </div>
+    </div>
+
+    <script>
+      const images = [
+        { url: "/post-everything-gallery/posteverything01.png", alt: "Post Everything 01" },
+        { url: "/post-everything-gallery/posteverything02.png", alt: "Post Everything 02" },
+        { url: "/post-everything-gallery/posteverything03.png", alt: "Post Everything 03" },
+        { url: "/post-everything-gallery/posteverything04.png", alt: "Post Everything 04" },
+        { url: "/post-everything-gallery/posteverything05.png", alt: "Post Everything 05" },
+        { url: "/post-everything-gallery/posteverything06.png", alt: "Post Everything 06" },
+        { url: "/post-everything-gallery/posteverything07.png", alt: "Post Everything 07" },
+        { url: "/post-everything-gallery/posteverything08.png", alt: "Post Everything 08" },
+        { url: "/post-everything-gallery/posteverything09.png", alt: "Post Everything 09" },
+        { url: "/post-everything-gallery/posteverything10.png", alt: "Post Everything 10" },
+        { url: "/post-everything-gallery/posteverything11.png", alt: "Post Everything 11" },
+        { url: "/post-everything-gallery/posteverything12.png", alt: "Post Everything 12" },
+        { url: "/post-everything-gallery/posteverything13.png", alt: "Post Everything 13" },
+        { url: "/post-everything-gallery/posteverything14.png", alt: "Post Everything 14" },
+        { url: "/post-everything-gallery/posteverything15.png", alt: "Post Everything 15" }
+      ];
+
+      const galleryPatterns = [
+        "gallery-card--feature",
+        "gallery-card--portrait",
+        "gallery-card--landscape",
+        "gallery-card--portrait",
+        "gallery-card--landscape",
+        "gallery-card--feature"
+      ];
+
+      const copy = {
+        de: {
+          navConcept: "Konzept",
+          navGallery: "Galerie",
+          heroText:
+            'Eine Untersuchung regelbasierter Kreativität: 250 Begriffe mit dem Präfix "post", gestaltet unter maschinellen Bedingungen mit strikt zufällig definierten Parametern.',
+          heroActionConcept: "Konzept lesen",
+          heroActionGallery: "Galerie ansehen",
+          metaYearLabel: "Jahr",
+          metaTypeLabel: "Typ",
+          metaTypeValue: "Bachelorarbeit",
+          metaFieldLabel: "Feld",
+          metaBookLabel: "Buch",
+          metaRulesLabel: "Anleitung",
+          metaParametersLabel: "Parameter",
+          fieldLine: "Designforschung / Experimental Design",
+          bookLine: "300 Seiten",
+          rulesLine: "1.120 Seiten",
+          parametersLine: "434 pro Begriff",
+          stageCaption:
+            "Regelwerk, Buch und visuelle Untersuchung werden hier als ein einziges Projektobjekt gelesen.",
+          conceptKicker: "Konzept",
+          conceptTitle:
+            "Das Projekt macht maschinische Bedingungen nicht nur zum Thema, sondern zur Methode.",
+          conceptIntro:
+            "Der Text bleibt absichtlich ausfuehrlich, damit das Konzept direkt auf der Seite lesbar ist und nicht erst hinter einer zweiten Ebene beginnt.",
+          galleryKicker: "Galerie",
+          galleryTitle:
+            "Das Material wird als visuelles Lexikon gezeigt, nicht als neutrale Dokumentation.",
+          galleryIntro:
+            "Die Bildflaechen bleiben klickbar und gross genug, um einzelne Entscheidungen, Verdichtungen und Unterschiede im Regelwerk sichtbar zu machen.",
+          footerLabel: "Designforschung / Regelbasierte Kreativität",
+          close: "Close",
+          concept: [
+            {
+              title: "Verschobene Kreativität",
+              text:
+                "Design- und kreative Prozesse im Allgemeinen werden sich grundlegend veraendern. Menschliche Leistung wird dabei teilweise von kuenstlicher Intelligenz unterstuetzt oder sogar ersetzt. Statt nur aus eigenen Ideen zu arbeiten, entsteht die Moeglichkeit, aus einer Vielzahl von Entwuerfen zu waehlen, die auf Basis von Strategie und Anweisungen generiert werden."
+            },
+            {
+              title: "Theoretischer Teil",
+              text:
+                "Im theoretischen Teil der Bachelorarbeit stehen Fragen im Zentrum wie: Wie verhaelt sich kuenstliche Intelligenz im Vergleich zur menschlichen Kreativitaet? Koennen Maschinen kreativ sein oder kreative Leistung sogar uebertreffen? Dafür werden sowohl Begriffe von Kreativitaet als auch Entwicklungsstufen kuenstlicher Intelligenz und bereits erzielte Fortschritte betrachtet."
+            },
+            {
+              title: "Selbst auferlegte Maschine",
+              text:
+                "Der kreative Teil bezieht sich dann bewusst auf die eigene menschliche Kreativitaet. In diesem Projekt unterwerfe ich mich sehr strikten Regeln, um zu untersuchen, wie es sich anfuehlt, Ideen nicht frei entfalten zu lassen, sondern sie an ein enges, fremdbestimmtes Regelwerk zu binden."
+            },
+            {
+              title: "250 Begriffe",
+              text:
+                "Etwa 250 englische Begriffe mit dem lateinischen Praefix post werden in einer Simulation gestaltet, bei der ich so tue, als würde ich wie eine Maschine agieren. Programme und Apps, Gestaltungsdauer, Suchmaschinen für Text und Bilder, Position, Schriftwahl, Farbe und Hintergrund werden zufaellig gesteuert und begrenzt."
+            },
+            {
+              title: "Regelwerk als Werkzeug",
+              text:
+                "Vor Beginn der eigentlichen Gestaltungsarbeit wurde eine Excel-Tabelle mit 1.120 Seiten erstellt, auf deren Grundlage die Begriffe automatisch abgearbeitet werden mussten. Zuvor wurden rund 3.000 auf meinen Geraeten verfügbare Programme und Apps auf ihre Eignung als Gestaltungswerkzeug hin analysiert."
+            },
+            {
+              title: "Ergebnis",
+              text:
+                "Das Resultat ist ein gedrucktes Lexikon von Begriffen, die sich vor allem auf gesellschaftliche Phaenomene beziehen, die heute inflationaer verwendet werden, etwa post-truth, postmodern, postdigital oder postfeminism. Als logische Konsequenz wurde auch der Text für das Kolloquium von einer kuenstlichen Intelligenz geschrieben."
+            }
+          ]
+        },
+        en: {
+          navConcept: "Concept",
+          navGallery: "Gallery",
+          heroText:
+            'An investigation of rule-based creativity: 250 terms with the prefix "post", designed under machine-like conditions with strictly randomly defined parameters.',
+          heroActionConcept: "Read concept",
+          heroActionGallery: "View gallery",
+          metaYearLabel: "Year",
+          metaTypeLabel: "Type",
+          metaTypeValue: "Bachelor thesis",
+          metaFieldLabel: "Field",
+          metaBookLabel: "Book",
+          metaRulesLabel: "Rule set",
+          metaParametersLabel: "Parameters",
+          fieldLine: "Design research / Experimental design",
+          bookLine: "300 pages",
+          rulesLine: "1,120 pages",
+          parametersLine: "434 per term",
+          stageCaption:
+            "Rule set, book and visual investigation are treated here as one single project object.",
+          conceptKicker: "Concept",
+          conceptTitle:
+            "The project turns machine-like conditions into method rather than merely topic.",
+          conceptIntro:
+            "The text remains deliberately substantial so the concept can be read directly on the page instead of beginning only behind a second layer.",
+          galleryKicker: "Gallery",
+          galleryTitle:
+            "The material is shown as a visual lexicon rather than as neutral documentation.",
+          galleryIntro:
+            "The image fields stay clickable and large enough to make decisions, densities and differences within the rule system visible.",
+          footerLabel: "Design research / Rule-based creativity",
+          close: "Close",
+          concept: [
+            {
+              title: "Shifted creativity",
+              text:
+                "Design and creative processes in general will change fundamentally. Human performance will be partially supported or even replaced by artificial intelligence. Instead of relying only on one's own ideas, it becomes possible to choose from a multitude of drafts generated from strategy and instructions."
+            },
+            {
+              title: "Theoretical part",
+              text:
+                "The theoretical part of the thesis revolves around questions such as: How does artificial intelligence compare to human creativity? Can machines be creative or even surpass creative performance? To address this, the project looks at concepts of creativity, the development of artificial intelligence, and the progress already made in creative production."
+            },
+            {
+              title: "Becoming a machine",
+              text:
+                "The practical part refers back to my own human creativity. In this project I deliberately submit myself to strict rules in order to examine how it feels when ideas cannot unfold freely but are bound to a tight external system."
+            },
+            {
+              title: "250 terms",
+              text:
+                "Around 250 English terms beginning with the Latin prefix post are designed in a simulation in which I behave as if I were a machine. Programs and apps, time limits, search engines for text and images, positions, font choices, colors and backgrounds are randomly controlled and restricted."
+            },
+            {
+              title: "Rule set as tool",
+              text:
+                "Before the actual design work began, an Excel sheet with 1,120 pages was created, forming the basis on which the terms had to be processed automatically. Before that, around 3,000 programs and apps available on my devices were analyzed for their suitability as design tools."
+            },
+            {
+              title: "Result",
+              text:
+                "The result is a printed lexicon of terms referring mainly to social phenomena that are used inflationarily today, such as post-truth, postmodern, postdigital or postfeminism. As a logical consequence, the colloquium text was also written by artificial intelligence."
+            }
+          ]
+        }
+      };
+
+      let language = localStorage.getItem("claudia-mai-language") === "en" ? "en" : "de";
+      let modalIndex = 0;
+
+      const langToggle = document.getElementById("lang-toggle");
+      const conceptStack = document.getElementById("concept-stack");
+      const heroIntro = document.getElementById("hero-intro");
+      const galleryGrid = document.getElementById("gallery-grid");
+      const modal = document.getElementById("image-modal");
+      const modalImage = document.getElementById("modal-image");
+      const modalCaption = document.getElementById("modal-caption");
+      const modalCount = document.getElementById("modal-count");
+      const modalClose = document.getElementById("modal-close");
+      const localTime = document.getElementById("local-time");
+
+      function updateTime() {
+        const time = new Intl.DateTimeFormat("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "Europe/Berlin"
+        }).format(new Date());
+
+        localTime.textContent = `Berlin ${time}`;
+      }
+
+      function renderHeroIntro() {
+        heroIntro.innerHTML = copy[language].concept
+          .slice(0, 3)
+          .map((item) => `<p>${item.text}</p>`)
+          .join("");
+      }
+
+      function renderConcept() {
+        conceptStack.innerHTML = copy[language].concept
+          .map(
+            (item) => `
+              <article class="concept-panel">
+                <span class="eyebrow">${item.title}</span>
+                <p>${item.text}</p>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderGallery() {
+        galleryGrid.innerHTML = images
+          .map((image, index) => {
+            const pattern = galleryPatterns[index % galleryPatterns.length];
+
+            return `
+              <button type="button" class="gallery-card ${pattern}" data-index="${index}">
+                <span class="gallery-card__media">
+                  <img src="${image.url}" alt="${image.alt}" loading="lazy" />
+                </span>
+                <span class="gallery-card__meta">
+                  <span class="gallery-card__index">${String(index + 1).padStart(2, "0")}</span>
+                  <span class="gallery-card__open">${language === "de" ? "Öffnen" : "Open"}</span>
+                </span>
+              </button>
+            `;
+          })
+          .join("");
+
+        galleryGrid.querySelectorAll(".gallery-card").forEach((card) => {
+          card.addEventListener("click", () => openModal(Number(card.dataset.index)));
+        });
+      }
+
+      function openModal(index) {
+        modalIndex = index;
+        const image = images[index];
+        modalImage.src = image.url;
+        modalImage.alt = image.alt;
+        modalCaption.textContent = image.alt;
+        modalCount.textContent = `${String(index + 1).padStart(2, "0")} / ${String(images.length).padStart(2, "0")}`;
+        modal.hidden = false;
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = language;
+
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          node.textContent = copy[language][node.dataset.i18n];
+        });
+
+        langToggle.textContent = language === "de" ? "EN" : "DE";
+        modalClose.textContent = copy[language].close;
+        renderHeroIntro();
+        renderConcept();
+        renderGallery();
+      }
+
+      langToggle.addEventListener("click", () => {
+        language = language === "de" ? "en" : "de";
+        localStorage.setItem("claudia-mai-language", language);
+        applyLanguage();
+        window.dispatchEvent(new CustomEvent("site-language-change", { detail: { language } }));
+      });
+
+      window.addEventListener("site-language-change", (event) => {
+        const nextLanguage = event.detail?.language === "en" ? "en" : "de";
+        if (nextLanguage === language) return;
+        language = nextLanguage;
+        applyLanguage();
+      });
+
+      modalClose.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.hidden) {
+          closeModal();
+        }
+
+        if (event.key === "ArrowRight" && !modal.hidden) {
+          openModal((modalIndex + 1) % images.length);
+        }
+
+        if (event.key === "ArrowLeft" && !modal.hidden) {
+          openModal((modalIndex - 1 + images.length) % images.length);
+        }
+      });
+
+      updateTime();
+      window.setInterval(updateTime, 30000);
+      applyLanguage();
+    </script>
+    <script type="module" src="/src/i18n.js"></script>
+  </body>
+</html>

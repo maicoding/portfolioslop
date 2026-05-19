@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COPY MACHINE</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/src/copy-machine.css">
+</head>
+<body>
+  <div id="system-bootup" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; color: #bcff3b; font-family: monospace; z-index: 99999; display: flex; flex-direction: column; padding: 30px;">
+    <div style="white-space: pre-wrap; font-size: 14px; line-height: 1.5; color: #bcff3b;">[SYSTEMA] INITIATING COPY_MACHINE.EXE ...
+> ALLOCATING KINETIC MEMORY: [OK]
+> ESTABLISHING NOISE GENERATORS: [OK]
+> BINDING UI PROTOCOLS: [OK]
+
+SYSTEM READY.</div>
+  </div>
+
+  <!-- System / Brutalism Style Overlay -->
+  <div class="system-overlay">
+    <div class="header-line">COPY_MACHINE v1.0 [ACTIVE]</div>
+    <div class="header-desc">KINETIC DISPLACEMENT TOOL</div>
+  </div>
+
+  <a href="/" class="back-link">_BACK</a>
+
+  <div id="canvas-container"></div>
+  
+  <script type="module" src="/src/copy-machine.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+</html>

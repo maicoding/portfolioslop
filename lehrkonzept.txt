@@ -1,0 +1,35 @@
+Lehrkonzept
+
+Einleitung und Haltung
+
+Meine Lehre entsteht an der Schnittstelle von gestalterischer Praxis, KI-basierter Produktion und kritischer Reflexion. Sie ist nicht auf einzelne Tools ausgerichtet, sondern auf die Fähigkeit, mit dynamischen Systemen umzugehen, Entscheidungen zu treffen, Ergebnisse einzuordnen und die eigene Praxis kontinuierlich weiterzuentwickeln.
+
+Future Skills
+
+Ein zentrales Anliegen ist die Vermittlung von Future Skills im Kontext KI-basierter Gestaltung. Diese Kompetenzen sind nicht statisch, sondern an sich verändernde Produktionsbedingungen gebunden. Sie entstehen durch wiederholte, reflektierte Auseinandersetzung mit neuen Technologien, nicht durch einmalige Tool-Einführungen, sondern durch kontinuierliche Praxis.
+
+Lernprozess und Haltung der Studierenden
+
+Studierende lernen, sich immer wieder auf neue Technologien einzulassen, diese einzuordnen und in eigene Arbeitsweisen zu überführen. KI wird als Teil eines reflektierten Prozesses eingesetzt, in dem Ergebnisse nicht nur produziert, sondern analysiert, bewertet und kritisch eingeschätzt werden. Das Ziel ist keine Beherrschung einzelner Tools, sondern Handlungsfähigkeit in offenen, sich verändernden Systemen.
+
+Technik wird dabei nur so weit eingeführt, wie sie im jeweiligen Kontext erforderlich ist. Das Spektrum technischer Kompetenzen erweitert sich schrittweise, ohne zu überfordern, aber mit dem Anspruch, es kontinuierlich zu verschieben. Technisches Grundwissen ist dabei keine Voraussetzung, sondern entsteht gemeinsam im Prozess.
+
+Prompting als Lehrinhalt
+
+Ich habe mehrere Prompting-Kurse entwickelt und unterrichtet. Im Zentrum steht, wie sprachbasierte Interfaces als gestalterisches Werkzeug eingesetzt werden können: die Entwicklung von Prompt-Systemen, iterative Feedback-Prozesse zwischen Mensch und Modell, die Übersetzung gestalterischer Konzepte in Sprache sowie die gezielte Steuerung und Bewertung von Outputs.
+
+Eigene Methoden
+
+In der Lehre setze ich eigene Methoden ein, darunter Reverse Prompting, Critical Audit Mode und Critical Foresight Mode. Diese Ansätze strukturieren die Auseinandersetzung mit KI-Outputs. Sie machen sichtbar, wie Modelle funktionieren, wo ihre Grenzen liegen und wie gestalterische Qualität im Dialog mit Systemen entwickelt werden kann. Der breite Einsatz unterschiedlicher Tools ermöglicht es dabei, individuelle Lösungen für Studierende anzubieten, je nach Ausgangslage, Interesse und Projektkontext.
+
+Kursformate und Projekte
+
+Zu meinen Lehrformaten gehören Kurse wie Beyond HTML und HTTPoetics, in denen Gestaltung, Code und kritische Praxis zusammengeführt werden. Kollaborative Projekte wie Truth Machine, ein Net-Art-Projekt mit Studierendengruppen aus Dortmund und Nairobi, erweitern den Lehrraum über institutionelle Grenzen hinaus. Zusammenarbeit findet dabei auf verschiedenen Ebenen statt: zwischen Studierenden, zwischen Lehrenden und mit Akteurinnen und Akteuren aus der Praxis, die unterschiedliche disziplinäre Perspektiven einbringen. Wie diese Formate in die eigene gestalterische Praxis rückwirken, ist unter /about beschrieben.
+
+KI als Gegenstand und Werkzeug
+
+KI ist in meiner Lehre nicht nur Werkzeug, sondern auch Gegenstand. Studierende untersuchen, wie KI-basierte Systeme Produktionslogiken verändern, welche ästhetischen und inhaltlichen Konsequenzen das hat und wie sich gestalterische Kontrolle verschiebt, wenn Modelle und Interfaces in den Prozess eingebunden werden.
+
+Schluss und Offenheit
+
+Lehre verstehe ich als kritische Praxis, die sich selbst immer wieder aktualisieren muss. Gerade im Kontext von KI ist diese Aktualität zentral, weil sich Werkzeuge, Interfaces und Möglichkeiten grundlegend und schnell verändern. Mein Anspruch ist es, diesen Wandel nicht nur zu vermitteln, sondern ihn gemeinsam mit Studierenden zu durchdenken und zu gestalten.

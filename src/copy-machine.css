@@ -1,0 +1,104 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #000;
+  font-family: monospace;
+}
+
+#canvas-container {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.system-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  color: #bcff3b;
+  pointer-events: none;
+}
+
+.header-line {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.header-desc {
+  font-size: 12px;
+  opacity: 0.7;
+  letter-spacing: 0.5px;
+}
+
+.back-link {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  color: #bcff3b;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid #bcff3b;
+  padding: 5px 10px;
+  background: rgba(0,0,0,0.8);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  background: #bcff3b;
+  color: #000;
+}
+
+/* Customizing Tweakpane for Brutalism */
+:root {
+  --tp-base-background-color: rgba(0, 0, 0, 0.9);
+  --tp-base-shadow-color: rgba(0, 0, 0, 0.5);
+  --tp-button-background-color: #222;
+  --tp-button-background-color-active: #bcff3b;
+  --tp-button-background-color-focus: #333;
+  --tp-button-background-color-hover: #444;
+  --tp-button-foreground-color: #bcff3b;
+  --tp-container-background-color: rgba(0, 0, 0, 0.9);
+  --tp-container-background-color-active: rgba(0, 0, 0, 0.9);
+  --tp-container-background-color-focus: rgba(0, 0, 0, 0.9);
+  --tp-container-background-color-hover: rgba(0, 0, 0, 0.9);
+  --tp-container-foreground-color: #bcff3b;
+  --tp-groove-foreground-color: rgba(0, 0, 0, 0.5);
+  --tp-input-background-color: #111;
+  --tp-input-background-color-active: #222;
+  --tp-input-background-color-focus: #222;
+  --tp-input-background-color-hover: #333;
+  --tp-input-foreground-color: #bcff3b;
+  --tp-label-foreground-color: #bcff3b;
+  --tp-monitor-background-color: #111;
+  --tp-monitor-foreground-color: #bcff3b;
+}
+
+.tp-dfwv {
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 99 !important;
+  min-width: 300px;
+  border: 1px solid #bcff3b;
+  border-radius: 0 !important;
+}
+
+.tp-lblv_l {
+  font-family: monospace !important;
+  text-transform: uppercase;
+}
+
+.tp-btnv_t {
+  font-family: monospace !important;
+  font-weight: bold;
+}

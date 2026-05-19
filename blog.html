@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claudia Mai - Denkraum</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta
+    name="description"
+    content="Denkraum mit Trendfeldern, Archivspuren und KI-generierten Artefakten." />
+</head>
+
+<body>
+  <header class="journal-topbar">
+    <a href="/index.html">back</a>
+    <p>denkraum / signalflaeche / live archiv</p>
+  </header>
+
+  <main id="blog-app"></main>
+
+  <script type="module" src="/src/journal-app.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+  <script type="module">
+    import { initConceptLayer } from '/src/concept-layer.js';
+
+    initConceptLayer('journal', { mountSelector: '#blog-app' });
+  </script>
+</body>
+
+</html>

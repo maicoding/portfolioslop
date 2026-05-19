@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claudia Mai — Portfolio</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta
+    name="description"
+    content="Portfolio, Lehre, Tools und ausgewählte Projekte von Claudia Mai." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <div class="portfolio-noise" aria-hidden="true"></div>
+
+  <header class="portfolio-topbar">
+    <a href="/index.html">Auswahl</a>
+    <nav class="portfolio-topbar__nav" aria-label="Portfolio Navigation">
+      <a href="/lehrkonzept.html">Lehre</a>
+      <a href="/version-5.html">Tools</a>
+      <a href="/blog.html">Denkraum</a>
+      <a href="/postdigital.html">Postdigitales Projekt</a>
+    </nav>
+  </header>
+
+  <main id="portfolio-app"></main>
+
+  <script type="module" src="/src/portfolio-home.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

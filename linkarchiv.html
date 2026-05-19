@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LINK_ARCHIVE</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      background: #000;
+      color: #bcff3b;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-y: auto;
+    }
+    a {
+      color: #bcff3b;
+      text-decoration: underline;
+    }
+    a:hover {
+      background: #bcff3b;
+      color: #000;
+    }
+    .back {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      border: 1px solid #bcff3b;
+      padding: 5px 10px;
+      text-decoration: none;
+      background: #000;
+      z-index: 100;
+      text-transform: uppercase;
+    }
+    #archive-log {
+      max-width: 800px;
+      margin-top: 50px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back">_BACK</a>
+  
+  <div id="archive-log">
+[SYSTEM] FETCHING RSS + DISCORD ARCHIVE ........
+<br><br>
+  </div>
+
+  <script>
+    const fallbackArchiveFeed = () => ([
+      {
+        id: "rss-fallback-1",
+        source: "rss",
+        author: "#ars #rss",
+        content: "AI infrastructure keeps leaking into everyday publishing stacks. https://arstechnica.com",
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: "rss-fallback-2",
+        source: "rss",
+        author: "#google-news #tech",
+        content: "Search, feeds and platform politics continue to collapse into one interface war. https://news.google.com",
+        timestamp: new Date(Date.now() - 1800000).toISOString()
+      },
+      {
+        id: "rss-fallback-3",
+        source: "rss",
+        author: "#techcrunch #rss",
+        content: "Generative tooling keeps redrawing the line between workflow and spectacle. https://techcrunch.com/category/artificial-intelligence/",
+        timestamp: new Date(Date.now() - 3600000).toISOString()
+      },
+      {
+        id: "rss-fallback-4",
+        source: "rss",
+        author: "#engadget #ai",
+        content: "Cybersecurity headlines keep feeding the same anxious dashboard aesthetics. https://www.engadget.com/tag/ai/",
+        timestamp: new Date(Date.now() - 5400000).toISOString()
+      },
+      {
+        id: "rss-fallback-5",
+        source: "rss",
+        author: "#verge #rss",
+        content: "Feeds turn into memory systems once platforms start shedding context. https://www.theverge.com",
+        timestamp: new Date(Date.now() - 7200000).toISOString()
+      },
+      {
+        id: "mock1",
+        source: "discord",
+        author: "wired-bot",
+        content: "[Wired] AI agents are writing code. What happens to designers? https://wired.com/some-article",
+        timestamp: new Date(Date.now() - 9000000).toISOString()
+      },
+      {
+        id: "mock2",
+        source: "discord",
+        author: "paper-drift",
+        content: "New generative model creates typography out of thin air! Check this paper: https://arxiv.org/abs/1234.567",
+        timestamp: new Date(Date.now() - 10800000).toISOString()
+      },
+      {
+        id: "mock3",
+        source: "discord",
+        author: "rss-ghost",
+        content: "IFTTT rule triggered: Liked in Reeder -> 'System Brutalism is back!'",
+        timestamp: new Date(Date.now() - 12600000).toISOString()
+      },
+      {
+        id: "mock4",
+        source: "discord",
+        author: "slop-unit",
+        content: "SPONSORED INTERRUPTION: ACHIEVE 10K DESIGNS PER MINUTE // human taste optional // /slop-o-matic.html",
+        timestamp: new Date(Date.now() - 14400000).toISOString()
+      },
+      {
+        id: "mock5",
+        source: "discord",
+        author: "trace-sink",
+        content: "Discord mirror: crawling another archive of links, leaks and half-broken references.",
+        timestamp: new Date(Date.now() - 16200000).toISOString()
+      }
+    ]);
+
+    function renderArchive(log, feed, statusLabel = "LIVE") {
+      log.innerHTML += `[SYSTEM] ARCHIVE SOURCE ........ ${statusLabel}\n\n`;
+
+      feed.forEach(msg => {
+        const date = new Date(msg.timestamp).toLocaleString();
+        const source = msg.source ? `[${String(msg.source).toUpperCase()}] ` : '';
+        const author = msg.author ? `${msg.author} // ` : '';
+        let text = msg.content || "[ EMPTY SIGNAL ]";
+
+        text = text.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+        text = text.replace(/(^|[\s>])(\/slop-o-matic\.html)(?=$|[\s<])/g, '$1<a href="/slop-o-matic.html">$2</a>');
+
+        log.innerHTML += `> [${date}] ${source}${author}${text}\n\n`;
+      });
+
+      log.innerHTML += "[SYSTEM] END OF ARCHIVE ....\n";
+    }
+
+    async function loadArchive() {
+      const log = document.getElementById('archive-log');
+      let feed = [];
+      let statusLabel = "FALLBACK";
+      try {
+          const res = await fetch('/.netlify/functions/archive-feed');
+          if (!res.ok) throw new Error(`ARCHIVE_HTTP_${res.status}`);
+
+          const data = await res.json();
+          if (!Array.isArray(data.archive) || data.archive.length < 1) {
+            throw new Error(data.error || 'EMPTY_ARCHIVE');
+          }
+
+          feed = data.archive;
+          statusLabel = "GLOBAL RSS + DISCORD";
+      } catch (e) {
+          log.innerHTML += `[WARN] LIVE ARCHIVE UNAVAILABLE .... ${e.message}\n`;
+          log.innerHTML += "[WARN] SWITCHING TO LOCAL SHADOW ARCHIVE ....\n\n";
+          feed = fallbackArchiveFeed();
+      }
+
+      renderArchive(log, feed, statusLabel);
+    }
+    
+    // Slight delay to simulate loading exactly like the boot screen
+    setTimeout(loadArchive, 500);
+  </script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+</html>

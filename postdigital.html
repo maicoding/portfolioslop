@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claudia Mai — Postdigitales Kunstprojekt</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+
+<body>
+
+  <div id="system-bootup" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:999999; color:#bcff3b; font-family:monospace; padding:30px; display:flex; flex-direction:column; justify-content:flex-end; pointer-events:none; transition: opacity 0.4s ease-out;">
+    <div id="boot-log" style="white-space:pre-wrap; font-size:14px; line-height:1.4;"></div>
+  </div>
+
+  <div id="three-canvas-container"></div>
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <nav class="scatter-nav">
+    <a href="lehrkonzept.html" class="nav-item" id="nav-concept">lehrkonzept.txt</a>
+    <a href="#" class="nav-item" id="nav-about">about.txt</a>
+    <a href="#" class="nav-item" id="nav-contact">contact_info</a>
+    <a href="#" class="nav-item" id="nav-archive">_ARCHIVE</a>
+  </nav>
+
+  <main id="directory-container">
+    <header id="db-header">
+      <h1>[ CLAUDIA MAI ] _own projects/teaching</h1>
+      <p>PORTFOLIO // SUGARSCROLL.DE / FACHHOCHSCHULE DORTMUND</p>
+    </header>
+
+    <div class="directory-list" id="directory-list">
+    </div>
+    <div class="cursor-switcher" id="cursor-switcher" aria-label="Cursor umschalten">
+      <span class="cursor-switcher-label">cursor</span>
+      <button class="cursor-switcher-button is-active" type="button" data-cursor-mode="cats">cats</button>
+      <button class="cursor-switcher-button" type="button" data-cursor-mode="minimal">minimal</button>
+      <button class="cursor-switcher-button" type="button" data-cursor-mode="off">off</button>
+    </div>
+  </main>
+
+  <div id="desktop-space">
+  </div>
+
+  <div id="news-surface">
+    <div id="rss-row-container" aria-label="RSS News Feed">
+    </div>
+    <div id="discord-sidebar-container" aria-label="Discord News Feed">
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flexible Visual Systems Tool</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.js"></script>
+  <script src="https://unpkg.com/p5.js-svg@1.5.1"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+    }
+
+    #controls {
+      width: 300px;
+      height: 100vh;
+      background: #1a1a1a;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #aaa;
+    }
+
+    select,
+    button,
+    input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #333;
+      color: white;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    select:hover,
+    input:hover {
+      background: #444;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #555;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .export-btn {
+      background: #ff5500;
+      margin-top: 5px;
+    }
+
+    .export-btn:hover {
+      background: #ff7722;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #262626;
+      color: #fff;
+      font-size: 13px;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .back-link:hover {
+      background: #3a3a3a;
+    }
+
+    #canvas-container {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image:
+        linear-gradient(45deg, #ddd 25%, transparent 25%),
+        linear-gradient(-45deg, #ddd 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ddd 75%),
+        linear-gradient(-45deg, transparent 75%, #ddd 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      background-color: #eee;
+    }
+
+    .info-box {
+      background: #2a2a2a;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #bbb;
+      line-height: 1.5;
+      margin-top: auto;
+    }
+
+    h2 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      color: #ff5500;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid #333;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <h2>Grid Designer</h2>
+
+    <div class="control-group">
+      <label>Raster (Spalten x Zeilen)</label>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <input type="number" id="cols" value="12" style="width: 50%;">
+        <input type="number" id="rows" value="8" style="width: 50%;">
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label>Zellengroesse</label>
+      <input type="range" id="cellSize" min="10" max="100" value="45">
+    </div>
+
+    <div class="control-group">
+      <label>Darstellungs-Modus</label>
+      <select id="mode">
+        <option value="2D-Rect">2D Rechteck</option>
+        <option value="2D-Circle">2D Kreis</option>
+        <option value="3D-Iso">3D Isometrisch (Block)</option>
+        <option value="Organic">Organisch (Blob)</option>
+      </select>
+    </div>
+
+    <div class="control-group" style="flex-direction: row; gap: 10px; align-items: center;">
+      <input type="checkbox" id="showGrid" checked style="width:auto">
+      <label for="showGrid" style="margin:0; cursor:pointer">Raster anzeigen</label>
+    </div>
+
+    <button id="clearBtn" style="background: #444;">Alles loeschen</button>
+
+    <hr>
+
+    <button class="export-btn" id="savePNG">Export PNG (Transparent)</button>
+    <button class="export-btn" id="saveSVG" style="background: #0077ff;">Export SVG (Vektor)</button>
+    <a class="back-link" href="/">Zurueck zum Portfolio</a>
+
+    <div class="info-box">
+      <strong>Steuerung:</strong><br>
+      • Maus ziehen: Zeichnen<br>
+      • Taste 'X' + Ziehen: Radieren<br>
+      • Taste 'C': Alles loeschen<br><br>
+      Exportiert ohne Hintergrund fuer die Verwendung als Maske/Container.
+    </div>
+  </div>
+
+  <div id="canvas-container"></div>
+
+  <script>
+    let grid = [];
+    let cols, rows, cellSize;
+    let canvas;
+
+    function setup() {
+      const container = document.getElementById('canvas-container');
+      canvas = createCanvas(800, 600);
+      canvas.parent(container);
+
+      syncUI();
+      updateGridSize();
+
+      document.getElementById('cols').addEventListener('change', updateGridSize);
+      document.getElementById('rows').addEventListener('change', updateGridSize);
+      document.getElementById('cellSize').addEventListener('input', (e) => {
+        cellSize = parseInt(e.target.value, 10);
+      });
+      document.getElementById('clearBtn').addEventListener('click', clearAll);
+      document.getElementById('savePNG').addEventListener('click', () => exportFile('png'));
+      document.getElementById('saveSVG').addEventListener('click', () => exportFile('svg'));
+    }
+
+    function syncUI() {
+      cols = parseInt(document.getElementById('cols').value, 10);
+      rows = parseInt(document.getElementById('rows').value, 10);
+      cellSize = parseInt(document.getElementById('cellSize').value, 10);
+    }
+
+    function updateGridSize() {
+      const newCols = parseInt(document.getElementById('cols').value, 10);
+      const newRows = parseInt(document.getElementById('rows').value, 10);
+
+      const previousCols = Number.isFinite(cols) ? cols : 0;
+      const previousRows = Number.isFinite(rows) ? rows : 0;
+      const newGrid = [];
+
+      for (let x = 0; x < newCols; x++) {
+        newGrid[x] = [];
+        for (let y = 0; y < newRows; y++) {
+          if (x < previousCols && y < previousRows && grid[x] && grid[x][y] !== undefined) {
+            newGrid[x][y] = grid[x][y];
+          } else {
+            newGrid[x][y] = 0;
+          }
+        }
+      }
+
+      cols = newCols;
+      rows = newRows;
+      grid = newGrid;
+    }
+
+    function clearAll() {
+      for (let x = 0; x < cols; x++) {
+        for (let y = 0; y < rows; y++) {
+          grid[x][y] = 0;
+        }
+      }
+    }
+
+    function draw() {
+      const mode = document.getElementById('mode').value;
+      const showGrid = document.getElementById('showGrid').checked;
+      renderScene(window, mode, showGrid);
+    }
+
+    function renderScene(target, mode, showGrid) {
+      const totalW = cols * cellSize;
+      const totalH = rows * cellSize;
+      const offsetX = target.width / 2 - totalW / 2;
+      const offsetY = target.height / 2 - totalH / 2;
+
+      target.clear();
+      target.push();
+      target.translate(offsetX, offsetY);
+
+      if (showGrid) {
+        target.stroke(255, 85, 0, 120);
+        target.strokeWeight(1);
+        target.noFill();
+        for (let x = 0; x <= cols; x++) {
+          target.line(x * cellSize, 0, x * cellSize, totalH);
+        }
+        for (let y = 0; y <= rows; y++) {
+          target.line(0, y * cellSize, totalW, y * cellSize);
+        }
+      }
+
+      target.fill(0);
+      target.noStroke();
+
+      for (let x = 0; x < cols; x++) {
+        for (let y = 0; y < rows; y++) {
+          if (grid[x][y] === 1) {
+            drawShape(target, x, y, mode);
+          }
+        }
+      }
+      target.pop();
+
+      if (target === window) {
+        handleInteraction();
+      }
+    }
+
+    function drawShape(target, x, y, mode) {
+      const px = x * cellSize;
+      const py = y * cellSize;
+
+      if (mode === '2D-Rect') {
+        target.rect(px, py, cellSize, cellSize);
+      } else if (mode === '2D-Circle') {
+        target.ellipseMode(CORNER);
+        target.ellipse(px, py, cellSize, cellSize);
+      } else if (mode === '3D-Iso') {
+        drawIsoCube(target, px, py, cellSize);
+      } else if (mode === 'Organic') {
+        drawOrganic(target, x, y, cellSize);
+      }
+    }
+
+    function drawIsoCube(target, x, y, s) {
+      target.fill(60);
+      target.beginShape();
+      target.vertex(x, y);
+      target.vertex(x + s * 0.4, y - s * 0.4);
+      target.vertex(x + s * 1.4, y - s * 0.4);
+      target.vertex(x + s, y);
+      target.endShape(CLOSE);
+
+      target.fill(30);
+      target.beginShape();
+      target.vertex(x + s, y);
+      target.vertex(x + s * 1.4, y - s * 0.4);
+      target.vertex(x + s * 1.4, y + s * 0.6);
+      target.vertex(x + s, y + s);
+      target.endShape(CLOSE);
+
+      target.fill(0);
+      target.rect(x, y, s, s);
+    }
+
+    function drawOrganic(target, x, y, s) {
+      const px = x * s;
+      const py = y * s;
+
+      target.ellipseMode(CORNER);
+      target.ellipse(px, py, s, s);
+
+      if (x < cols - 1 && grid[x + 1][y] === 1) {
+        target.rect(px + s / 2, py, s, s, s / 2);
+      }
+      if (y < rows - 1 && grid[x][y + 1] === 1) {
+        target.rect(px, py + s / 2, s, s, s / 2);
+      }
+    }
+
+    function handleInteraction() {
+      if (mouseIsPressed && mouseButton === LEFT) {
+        const totalW = cols * cellSize;
+        const totalH = rows * cellSize;
+        const startX = width / 2 - totalW / 2;
+        const startY = height / 2 - totalH / 2;
+
+        const gx = floor((mouseX - startX) / cellSize);
+        const gy = floor((mouseY - startY) / cellSize);
+
+        if (gx >= 0 && gx < cols && gy >= 0 && gy < rows) {
+          if (keyIsDown(88)) {
+            grid[gx][gy] = 0;
+          } else {
+            grid[gx][gy] = 1;
+          }
+        }
+      }
+    }
+
+    function exportFile(type) {
+      const mode = document.getElementById('mode').value;
+      const showGrid = document.getElementById('showGrid').checked;
+
+      if (type === 'svg') {
+        const svgRenderer = createGraphics(width, height, SVG);
+        renderScene(svgRenderer, mode, false);
+        save(svgRenderer, 'container_vektor.svg');
+      } else {
+        renderScene(window, mode, false);
+        saveCanvas(canvas, 'container_maske', 'png');
+        renderScene(window, mode, showGrid);
+      }
+    }
+
+    function keyPressed() {
+      if (key === 'c' || key === 'C') {
+        clearAll();
+      }
+    }
+  </script>
+  <script type="module" src="/src/i18n.js"></script>
+</body>
+</html>

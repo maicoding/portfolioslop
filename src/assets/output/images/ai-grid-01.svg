@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" fill="none">
+  <rect width="1200" height="1200" fill="#050510"/>
+  <rect x="58" y="58" width="1084" height="1084" rx="32" stroke="#36F9B6" stroke-width="8"/>
+  <circle cx="310" cy="280" r="180" fill="url(#paint0_radial)"/>
+  <circle cx="860" cy="400" r="250" fill="url(#paint1_radial)" fill-opacity=".92"/>
+  <rect x="180" y="700" width="760" height="220" rx="28" fill="#0F132A"/>
+  <path d="M180 810C330 720 492 720 650 810C760 874 862 875 940 810" stroke="#E5FBFF" stroke-width="12" stroke-linecap="round"/>
+  <path d="M180 870C331 781 510 782 690 870C788 918 871 915 940 870" stroke="#36F9B6" stroke-width="8" stroke-linecap="round"/>
+  <path d="M136 164H1064" stroke="#36F9B6" stroke-opacity=".4" stroke-width="4" stroke-dasharray="10 14"/>
+  <path d="M136 1036H1064" stroke="#7C5CFF" stroke-opacity=".5" stroke-width="4" stroke-dasharray="10 14"/>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(310 280) rotate(90) scale(180)">
+      <stop stop-color="#36F9B6"/>
+      <stop offset="1" stop-color="#36F9B6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(860 400) rotate(90) scale(250)">
+      <stop stop-color="#7C5CFF"/>
+      <stop offset="1" stop-color="#7C5CFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
