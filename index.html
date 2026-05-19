@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="A deliberately over-generated AI slop portfolio experiment for Claudia Mai."
+      content="Claudia Mai: Portfolio und postdigitales Projekt."
     >
-    <title>Claudia Mai / Portfolio Slop</title>
+    <title>Claudia Mai</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -15,114 +15,104 @@
     <canvas id="slop-field" aria-hidden="true"></canvas>
     <div class="page-shell">
       <header class="site-header" data-glass>
-        <a class="brand" href="#top" aria-label="Portfolio Slop home">
+        <a class="brand" href="#top" aria-label="Claudia Mai">
           <span class="brand-mark">CM</span>
           <span>
-            <strong>Portfolio Slop</strong>
-            <small>beta aura build</small>
+            <strong>Claudia Mai</strong>
+            <small>Portfolio</small>
           </span>
         </a>
-        <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#work">Work</a>
-          <a href="#complete-index">Index</a>
-          <a href="#pipeline">Pipeline</a>
-          <a href="#proof">Proof</a>
-          <a href="#contact">Contact</a>
+        <nav class="nav-links" aria-label="Portfolio Navigation">
+          <a href="#arbeiten">Portfolio</a>
+          <a href="#auswahl">Postdigital</a>
+          <a href="#lehre">Lehre</a>
+          <a href="#bereiche">Tools</a>
+          <a href="#contact">Kontakt</a>
         </nav>
-        <button class="icon-button" type="button" data-randomize aria-label="Regenerate page mood">
-          <span aria-hidden="true">R</span>
-        </button>
+        <a class="icon-button" href="mailto:clmai@me.com" aria-label="E-Mail">M</a>
       </header>
 
       <main id="top">
         <section class="hero section-pad">
           <div class="hero-copy">
-            <p class="signal-line">CLAUDIA MAI / PORTFOLIO SLOP</p>
-            <h1>One-click aura. Infinite deliverables.</h1>
-            <p class="hero-text">Projects, tools, teaching, archives, vibes.</p>
-            <div class="hero-actions" aria-label="Hero actions">
-              <button class="primary-action" type="button" data-generate>Generate Work</button>
-              <a class="secondary-action" href="#contact">Summon Contact</a>
+            <p class="signal-line">Claudia Mai</p>
+            <h1>CLAUDIA MAI</h1>
+            <p class="hero-text">Projekte, Lehre, Tools.</p>
+            <div class="hero-actions" aria-label="Auswahl">
+              <a class="primary-action" href="portfolio.html">Portfolio</a>
+              <a class="secondary-action" href="postdigital.html">Postdigital</a>
             </div>
-            <div class="prompt-stack" aria-label="Generated prompt chips">
-              <span>make it glass</span>
-              <span>add dashboard</span>
-              <span>more aura</span>
-              <span>ship before thinking</span>
+            <div class="prompt-stack" aria-label="Auswahl">
+              <span>Lehrkonzept</span>
+              <span>Lehrprojekte</span>
+              <span>Denkraum</span>
+              <span>Linkarchiv</span>
             </div>
           </div>
 
           <div class="hero-visual" data-glass>
-            <img src="assets/slop-hero.png" alt="Chrome holographic AI slop sculpture">
+            <img src="post-everything-gallery/posteverything01.png" alt="Vorschau aus Post Everything">
             <div class="model-card model-card-top">
-              <span>Model vibe</span>
-              <strong>Confidently decorative</strong>
+              <span>Portfolio</span>
+              <strong>Projekte, Lehre, Tools.</strong>
             </div>
             <div class="model-card model-card-bottom">
-              <span>Aura score</span>
-              <strong data-aura-score>97.3%</strong>
+              <span>Postdigital</span>
+              <strong>Experimentelle Gegenfassung.</strong>
             </div>
           </div>
         </section>
 
-        <section class="ticker" aria-label="AI cliche ticker">
+        <section class="ticker" aria-label="Auswahl">
           <div class="ticker-track">
-            <span>synthetic synergy</span>
-            <span>agentic moodboard</span>
-            <span>holographic funnel</span>
-            <span>viral vectorfield</span>
-            <span>prompt-native practice</span>
-            <span>latent interface energy</span>
-            <span>synthetic synergy</span>
-            <span>agentic moodboard</span>
-            <span>holographic funnel</span>
-            <span>viral vectorfield</span>
+            <span>Portfolio</span>
+            <span>Postdigital</span>
+            <span>Lehrkonzept</span>
+            <span>Lehrprojekte</span>
+            <span>Tool Gallery</span>
+            <span>Denkraum</span>
+            <span>Linkarchiv</span>
+            <span>Portfolio</span>
+            <span>Postdigital</span>
+            <span>Lehrkonzept</span>
           </div>
         </section>
 
-        <section class="section-pad work-section" id="work">
+        <section class="section-pad work-section" id="arbeiten">
           <div class="section-heading">
-            <p class="signal-line">Generated work universe</p>
-            <h2>Core portfolio signals first. The full old site is onboard below.</h2>
-            <p>
-              A sloppier skin for actual creative coding, publishing tools, flat experiments,
-              and archive systems.
-            </p>
+            <p class="signal-line">Ausgewählte Arbeiten</p>
+            <h2>Portfolio, Lehre, Tools und ausgewählte Projekte von Claudia Mai.</h2>
           </div>
 
-          <div class="filter-bar" aria-label="Project filters">
-            <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">All slop</button>
+          <div class="filter-bar" aria-label="Auswahl">
+            <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Auswahl</button>
+            <button type="button" class="filter-chip" data-filter="portfolio" aria-pressed="false">Portfolio</button>
+            <button type="button" class="filter-chip" data-filter="lehre" aria-pressed="false">Lehre</button>
             <button type="button" class="filter-chip" data-filter="tools" aria-pressed="false">Tools</button>
-            <button type="button" class="filter-chip" data-filter="space" aria-pressed="false">Space</button>
-            <button type="button" class="filter-chip" data-filter="archive" aria-pressed="false">Archive</button>
           </div>
 
           <div class="project-grid" data-project-grid></div>
         </section>
 
-        <section class="section-pad index-section" id="complete-index">
+        <section class="section-pad index-section" id="auswahl">
           <div class="section-heading">
-            <p class="signal-line">Full legacy ingestion complete</p>
-            <h2>All old pages, tools, texts, assets, and functions came along.</h2>
-            <p>
-              This is the complete content map from the original portfolio, now parked inside
-              the Slop build without replacing the old website.
-            </p>
+            <p class="signal-line">Auswahl</p>
+            <h2>Portfolio und postdigitales Projekt.</h2>
           </div>
 
-          <div class="legacy-grid" aria-label="Complete imported site index">
+          <div class="legacy-grid" aria-label="Auswahl">
             <article class="legacy-card" data-glass>
-              <span>Gateway</span>
-              <h3>Original entry points</h3>
-              <a href="classic-index.html">Classic selection</a>
-              <a href="portfolio.html">Portfolio home</a>
-              <a href="postdigital.html">Postdigital project</a>
+              <span>01</span>
+              <h3>Portfolio</h3>
+              <a href="classic-index.html">Auswahl</a>
+              <a href="portfolio.html">Portfolio</a>
+              <a href="postdigital.html">Postdigital</a>
             </article>
 
             <article class="legacy-card" data-glass>
-              <span>Projects</span>
-              <h3>Work and case studies</h3>
-              <a href="project.html">Project overview</a>
+              <span>02</span>
+              <h3>Projekte</h3>
+              <a href="project.html">Project Details</a>
               <a href="bachelorprojekt-post-everything.html">Post Everything</a>
               <a href="flexible-visual-systems.html">Flexible Visual Systems</a>
               <a href="gravity-is-optional.html">Gravity Is Optional</a>
@@ -130,9 +120,9 @@
             </article>
 
             <article class="legacy-card" data-glass>
-              <span>Tools</span>
-              <h3>Interactive machines</h3>
-              <a href="version-5.html">Tool gallery</a>
+              <span>03</span>
+              <h3>Tools</h3>
+              <a href="version-5.html">Tool Gallery</a>
               <a href="social-generator.html">Social Media Generator</a>
               <a href="slop-o-matic.html">Slop-O-Matic</a>
               <a href="copy-machine.html">Copy Machine</a>
@@ -142,8 +132,8 @@
             </article>
 
             <article class="legacy-card" data-glass>
-              <span>Experiments</span>
-              <h3>Versions and flat spaces</h3>
+              <span>04</span>
+              <h3>Postdigital</h3>
               <a href="version-2-0.html">I find the luck 2.0</a>
               <a href="version-2-5.html">I find the luck 2.5</a>
               <a href="version-3.html">I find the luck 3</a>
@@ -151,100 +141,56 @@
             </article>
 
             <article class="legacy-card" data-glass>
-              <span>Teaching</span>
-              <h3>Lehre and notes</h3>
+              <span>05</span>
+              <h3>Lehre</h3>
               <a href="lehrkonzept.html">Lehrkonzept</a>
               <a href="lehrprojekte.html">Lehrprojekte</a>
-              <a href="pdfs/prompting-workshops.pdf">Prompting workshops PDF</a>
-              <a href="lehrkonzept_master_final.md">Lehrkonzept markdown</a>
+              <a href="pdfs/prompting-workshops.pdf">prompting-workshops.pdf</a>
+              <a href="lehrkonzept_master_final.md">lehrkonzept_master_final.md</a>
             </article>
 
             <article class="legacy-card" data-glass>
-              <span>Archive</span>
-              <h3>Journal and raw material</h3>
+              <span>06</span>
+              <h3>Denkraum</h3>
               <a href="blog.html">Denkraum / Journal</a>
               <a href="linkarchiv.html">Linkarchiv</a>
               <a href="manifesto.txt">Manifesto</a>
-              <a href="journal-blogeintrag.txt">Journal draft</a>
-              <a href="lehrkonzept.txt">Lehrkonzept text</a>
+              <a href="journal-blogeintrag.txt">journal-blogeintrag.txt</a>
+              <a href="lehrkonzept.txt">lehrkonzept.txt</a>
             </article>
           </div>
         </section>
 
-        <section class="section-pad pipeline-section" id="pipeline">
+        <section class="section-pad pipeline-section" id="lehre">
           <div class="pipeline-board" data-glass>
             <div class="pipeline-copy">
-              <p class="signal-line">Slop stack 3000</p>
-              <h2>Turn one idea into a suspiciously complete ecosystem.</h2>
-              <p>
-                The controls do almost nothing useful, which makes them extremely authentic.
-                Push the slider and watch the portfolio become more convinced of itself.
-              </p>
+              <p class="signal-line">Lehrkonzept</p>
+              <h2>Einleitung und Haltung</h2>
+              <p>Meine Lehre entsteht an der Schnittstelle von gestalterischer Praxis, KI-basierter Produktion und kritischer Reflexion. Sie ist nicht auf einzelne Tools ausgerichtet, sondern auf die Fähigkeit, mit dynamischen Systemen umzugehen, Entscheidungen zu treffen, Ergebnisse einzuordnen und die eigene Praxis kontinuierlich weiterzuentwickeln.</p>
             </div>
 
-            <div class="control-panel" aria-label="Slop generation controls">
-              <label for="slop-level">
-                <span>Slop intensity</span>
-                <strong data-slop-label>73</strong>
-              </label>
-              <input id="slop-level" type="range" min="10" max="100" value="73" data-slop-range>
-              <div class="mode-grid" aria-label="Generation modes">
-                <button type="button" class="mode-button is-active" data-mode="Aura">Aura</button>
-                <button type="button" class="mode-button" data-mode="Chrome">Chrome</button>
-                <button type="button" class="mode-button" data-mode="Proof">Proof</button>
-              </div>
+            <div class="control-panel">
+              <p class="signal-line">Future Skills</p>
+              <p>Ein zentrales Anliegen ist die Vermittlung von Future Skills im Kontext KI-basierter Gestaltung. Diese Kompetenzen sind nicht statisch, sondern an sich verändernde Produktionsbedingungen gebunden. Sie entstehen durch wiederholte, reflektierte Auseinandersetzung mit neuen Technologien, nicht durch einmalige Tool-Einführungen, sondern durch kontinuierliche Praxis.</p>
             </div>
 
-            <div class="status-console" aria-live="polite">
-              <div class="console-header">
-                <span>live hallucination log</span>
-                <strong data-console-status>ready</strong>
-              </div>
-              <ol data-console-log>
-                <li>Booting vibe compiler.</li>
-                <li>Crossfading portfolio facts with a tasteful amount of nonsense.</li>
-                <li>Awaiting your next dramatic click.</li>
-              </ol>
+            <div class="status-console">
+              <p class="signal-line">Prompting als Lehrinhalt</p>
+              <p>Ich habe mehrere Prompting-Kurse entwickelt und unterrichtet. Im Zentrum steht, wie sprachbasierte Interfaces als gestalterisches Werkzeug eingesetzt werden können: die Entwicklung von Prompt-Systemen, iterative Feedback-Prozesse zwischen Mensch und Modell, die Übersetzung gestalterischer Konzepte in Sprache sowie die gezielte Steuerung und Bewertung von Outputs.</p>
             </div>
-          </div>
-        </section>
-
-        <section class="section-pad proof-section" id="proof">
-          <div class="section-heading">
-            <p class="signal-line">Proof, but make it vapor</p>
-            <h2>Testimonials from the interface itself.</h2>
-          </div>
-          <div class="proof-grid">
-            <article data-glass>
-              <p>"The gradients told me this was scalable, and honestly, I believed them."</p>
-              <strong>Head of Hype</strong>
-            </article>
-            <article data-glass>
-              <p>"A rigorous exploration of what happens when every button wants funding."</p>
-              <strong>Committee of Shiny Things</strong>
-            </article>
-            <article data-glass>
-              <p>"Finally, a portfolio with the courage to overfit its own personality."</p>
-              <strong>Anonymous Model Output</strong>
-            </article>
           </div>
         </section>
 
         <section class="section-pad contact-section" id="contact">
           <div class="contact-card" data-glass>
             <div>
-              <p class="signal-line">Contact summon sequence</p>
-              <h2>Need a real project under all this fog?</h2>
-              <p>
-                Strip away the glitter and the premise is simple: experimental web work,
-                teaching formats, visual systems, and tools that invite people to play.
-              </p>
+              <p class="signal-line">CONTACT</p>
+              <h2>E-Mail</h2>
+              <p>Fuer Lehre, Vortraege, Projekte, Kollaborationen oder Rueckfragen zu den Arbeiten am besten per Mail.</p>
             </div>
             <div class="contact-actions">
               <a class="primary-action" href="mailto:clmai@me.com">clmai@me.com</a>
-              <button class="secondary-action" type="button" data-copy-contact>Copy contact</button>
             </div>
-            <p class="contact-status" data-contact-status aria-live="polite">No funnel. Just an email.</p>
           </div>
         </section>
       </main>
@@ -260,7 +206,7 @@
           </div>
           <h3></h3>
           <p></p>
-          <button type="button" class="card-link">Generate details</button>
+          <a class="card-link" href="#">Projekt öffnen</a>
         </div>
       </article>
     </template>
