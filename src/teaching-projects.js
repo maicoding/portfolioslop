@@ -64,7 +64,7 @@ function inferTags(title = '', text = '') {
     ['KI / Bild', /(ki|ai|prompt|midjourney|generativ|image|bilder)/],
     ['Publikation', /(buch|publikation|magazin|ringbuch|kalender|postkarten)/],
     ['Raum / Stadt', /(stadt|urban|raum|space|intervention|field research)/],
-    ['3D / AR / VR', /(vr|ar|3d|nomad|blender|styly|surreal worlds)/],
+    ['AR / VR / Raum', /(vr|ar|nomad|blender|styly|surreal worlds)/],
     ['Kollaboration', /(summer school|nairobi|studierenden|gruppen|workshop|international)/],
     ['Recherche', /(kritisch|analyse|untersuch|frage|dokument)/],
   ];

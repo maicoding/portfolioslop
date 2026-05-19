@@ -22,15 +22,15 @@ const projects = [
     detail: "Slop-O-Matic reached peak gloss and requested a second funding round from itself."
   },
   {
-    title: "VR Gallery",
-    kind: "space",
+    title: "Slop Gallery",
+    kind: "poster dump",
     filter: "space",
-    score: "depth 88",
+    score: "depth 0",
     accent: "rgba(185, 255, 69, 0.62)",
     hotX: "68%",
     imagePosition: "66% 38%",
-    text: "A room for 3D fragments, soft collisions, spatial browsing, and suspiciously poetic navigation.",
-    detail: "VR Gallery opened a portal, placed three chrome blobs inside, and called it curation."
+    text: "A flattened gallery for glossy panels, fake metrics, spatial language, and suspiciously poetic navigation.",
+    detail: "Slop Gallery removed the expensive parts, kept the neon confidence, and called it curation."
   },
   {
     title: "Journal Archive",

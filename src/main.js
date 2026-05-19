@@ -1,7 +1,7 @@
 // src/main.js
 import './style.css';
 import { projectsData } from './data.js';
-import { initThreeJS } from './three-bg.js';
+import { initSlopBackground } from './slop-bg.js';
 import {
     getAiImageStats,
     getRandomAiImageSet,
@@ -15,7 +15,7 @@ import {
 } from './output-media.js';
 import { getRandomOutputLink } from './output-links.js';
 
-// --- INITIALIZE 3D FLOATING WEBGL WITH BOOT SEQUENCE ---
+// --- INITIALIZE FLAT SLOP BACKGROUND WITH BOOT SEQUENCE ---
 const bootLog = document.getElementById('boot-log');
 const bootScreen = document.getElementById('system-bootup');
 const rssRowContainer = document.getElementById('rss-row-container');
@@ -30,7 +30,7 @@ function spawnWorkInProgressNotice() {}
 
 async function runBootSequence() {
     if (!bootScreen) {
-        initThreeJS();
+        initSlopBackground();
         window.setTimeout(spawnWorkInProgressNotice, 2000);
         return;
     }
@@ -40,7 +40,7 @@ async function runBootSequence() {
         await new Promise(r => setTimeout(r, 70));
     }
     
-    await initThreeJS();
+    await initSlopBackground();
     
     await new Promise(r => setTimeout(r, 110));
     
@@ -99,12 +99,12 @@ const fallbackDiscordFeed = [
 
 const projectPopupConcepts = {
     'fantasy-landscape': {
-        intro: 'Fantasy Landscape markiert hier den Einstieg in einen groesseren 3D/VR-Zusammenhang. Statt mehrere einzelne 3D-Arbeiten parallel im Hauptindex zu doppeln, fuehrt diese Arbeit gebuendelt in den bewegten Projektcluster weiter.',
+        intro: 'Slop Gallery markiert hier den Einstieg in den flachgelegten Projektcluster. Statt schwerer Raumtechnik gibt es jetzt Posterlogik, Gloss-Flaechen, Statuswerte und einen absichtlich ueberdrehten Index.',
         versions: [
             {
                 href: '/threedvr.html',
-                title: 'weitere arbeiten',
-                text: 'Die weitere Auswahl an 3D- und VR-Arbeiten wird auf einer eigenen Seite zusammengefuehrt: als bewegte Bildflaechen mit ruhigem Projektindex darunter. So bleibt 3D als Thema sichtbar, ohne die Startseite doppelt zu belegen.',
+                title: 'slop gallery',
+                text: 'Die alte Raum-Geste wurde entfernt und als flache Galerie neu gebaut: keine Modelle, kein schwerer Renderballast, nur Neon, Scroll, UI-Sprache und genau genug Interaktion.',
             }
         ]
     },
@@ -1028,9 +1028,9 @@ navItems.forEach(item => {
             content = `
               <p style="margin-top:0;"><strong>Portfolio & Praxis</strong></p>
               <p><strong>Einleitung & Fokus</strong></p>
-              <p>Ich arbeite an der Schnittstelle von Gestaltung, Forschung und digitaler Praxis. Mein Fokus liegt auf neuen Technologien in unterschiedlichen Ausprägungen und Anwendungsebenen — auf KI, VR und AR, 3D sowie den Interfaces, visuellen Systemen und experimentellen Formaten, in denen technologische Umbrüche nicht nur angewendet, sondern formal und inhaltlich sichtbar werden. Technik setze ich dabei nur so ein, wie sie im jeweiligen Zusammenhang notwendig ist — und vermittle sie entsprechend.</p>
+              <p>Ich arbeite an der Schnittstelle von Gestaltung, Forschung und digitaler Praxis. Mein Fokus liegt auf neuen Technologien in unterschiedlichen Ausprägungen und Anwendungsebenen — auf KI, Interfaces, visuellen Systemen und experimentellen Formaten, in denen technologische Umbrüche nicht nur angewendet, sondern formal und inhaltlich sichtbar werden. Technik setze ich dabei nur so ein, wie sie im jeweiligen Zusammenhang notwendig ist — und vermittle sie entsprechend.</p>
               <p><strong>Portfolio als Arbeitsraum</strong></p>
-              <p>Dieses Portfolio ist bewusst keine einheitlich durchgestaltete Oberfläche, sondern ein Arbeitsraum. Es versammelt Projekte, Archive, Tool-Experimente, 3D-Arbeiten und KI-basierte Untersuchungen, die parallel entstehen und miteinander in Beziehung stehen. Die Struktur folgt keiner Marke, sondern einer Praxis.</p>
+              <p>Dieses Portfolio ist bewusst keine einheitlich durchgestaltete Oberfläche, sondern ein Arbeitsraum. Es versammelt Projekte, Archive, Tool-Experimente und KI-basierte Untersuchungen, die parallel entstehen und miteinander in Beziehung stehen. Die Struktur folgt keiner Marke, sondern einer Praxis.</p>
               <p>Die Seite ist Work in Progress. Nicht alles funktioniert zu jedem Zeitpunkt — Dinge brechen, werden repariert, umgebaut, verbessert. Das ist kein Versehen, sondern Teil des Zustands, den diese Seite zeigt.</p>
               <p><strong>Unterschiedliche visuelle Sprachen</strong></p>
               <p>Die Webseite hat bewusst keine einheitliche Gestaltung. Sie ist Ausdruck der Vielfalt der Möglichkeiten — unterschiedlicher Werkzeuge, Kontexte und Herangehensweisen. Projekte wie „Gravity is Optional" arbeiten mit anderen räumlichen, narrativen und ästhetischen Setzungen als die Index-Seite oder das KI Image Archive. Gestaltung wird hier nicht vereinheitlicht, sondern jeweils aus dem Gegenstand und dem Kontext heraus entwickelt. Die Heterogenität ist keine Schwäche des Systems, sondern seine Aussage.</p>
@@ -1047,7 +1047,7 @@ navItems.forEach(item => {
               <p><strong>Arbeitsweise: explorativ & systematisch</strong></p>
               <p>Meine Arbeitsweise ist explorativ und zugleich systematisch. Für meine Bachelorarbeit habe ich über 3.000 digitale Tools auf ihre gestalterische Einsetzbarkeit untersucht. Dieses Wissen nutze ich, um neue Werkzeuge schnell einzuordnen, produktive Workflows zu entwickeln und Systeme gezielt miteinander zu verbinden.</p>
               <p><strong>Eigene Tools & Setups</strong></p>
-              <p>Ich arbeite mit eigenen Setups, entwickle Tools und kombiniere bestehende Anwendungen zu funktionierenden Prozessen. Dazu gehören automatisierte Workflows, generative Bildsysteme, 3D-Umgebungen, VR- und AR-Anwendungen sowie experimentelle Interfaces. Ansätze wie Vibe Coding und Vibe Design nutze ich, um Ideen direkt in Prototypen zu überführen und Gestaltung im Prozess zu entscheiden.</p>
+              <p>Ich arbeite mit eigenen Setups, entwickle Tools und kombiniere bestehende Anwendungen zu funktionierenden Prozessen. Dazu gehören automatisierte Workflows, generative Bildsysteme, flache Interaktionsräume, Slop-Oberflächen sowie experimentelle Interfaces. Ansätze wie Vibe Coding und Vibe Design nutze ich, um Ideen direkt in Prototypen zu überführen und Gestaltung im Prozess zu entscheiden.</p>
               <p><strong>Prompting & LLMs</strong></p>
               <p>Ein zentraler Bestandteil meiner Praxis ist Prompting und die Arbeit mit Large Language Models. Ich entwickle Prompt-Systeme, iterative Feedback-Prozesse zwischen Mensch und Modell und übersetze gestalterische Konzepte in Sprache. Wie diese Arbeit in die Lehre übergeht, ist unter /lehre beschrieben.</p>
               <p><strong>Agentische Systeme & KI-Workflows</strong></p>

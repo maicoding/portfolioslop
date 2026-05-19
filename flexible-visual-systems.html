@@ -161,7 +161,7 @@
       <select id="mode">
         <option value="2D-Rect">2D Rechteck</option>
         <option value="2D-Circle">2D Kreis</option>
-        <option value="3D-Iso">3D Isometrisch (Block)</option>
+        <option value="Iso-Block">Iso Block</option>
         <option value="Organic">Organisch (Blob)</option>
       </select>
     </div>
@@ -305,7 +305,7 @@
       } else if (mode === '2D-Circle') {
         target.ellipseMode(CORNER);
         target.ellipse(px, py, cellSize, cellSize);
-      } else if (mode === '3D-Iso') {
+      } else if (mode === 'Iso-Block') {
         drawIsoCube(target, px, py, cellSize);
       } else if (mode === 'Organic') {
         drawOrganic(target, x, y, cellSize);

@@ -270,7 +270,7 @@ export const lehrkonzeptChunks = [
     explanation:
       'Digitale Raeume werden als eigenstaendige Entwurfsform behandelt. Studierende arbeiten mit raeumlicher Wahrnehmung und Interaktion.',
     example: 'Hybride Raeume, AR-Interventionen, virtuelle Umgebungen.',
-    skills: ['Spatial Design', 'VR/AR Verstaendnis', 'Interaktionslogik', 'Arbeiten mit 3D Tools'],
+    skills: ['Spatial Design', 'VR/AR Verstaendnis', 'Interaktionslogik', 'Arbeiten mit digitalen Tools'],
     related: ['lp_system_001'],
   },
   {
@@ -312,7 +312,7 @@ export const lehrkonzeptChunks = [
     explanation:
       'Digitale Raeume werden als Systeme gedacht, nicht als statische Umgebungen.',
     example: 'Interaktive virtuelle Umgebungen.',
-    skills: ['Systemdenken', '3D Gestaltung', 'Interaktion', 'Narrative Raeume'],
+    skills: ['Systemdenken', 'raeumliche Gestaltung', 'Interaktion', 'Narrative Raeume'],
     related: ['lp_system_001'],
   },
   {

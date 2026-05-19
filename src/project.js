@@ -102,7 +102,7 @@ function inferTags(projectIdValue, title, text) {
   const haystack = `${projectIdValue} ${title} ${text}`.toLowerCase();
   const tags = [];
   const rules = [
-    ['3D / VR', /(3d|vr|ar|render|nomad|blender|styly|surreal worlds|planet-b)/],
+    ['Flat Slop', /(slop|poster|gloss|flat|interface|archive|surreal worlds|planet-b)/],
     ['KI / Automation', /(ki|ai|artificial intelligence|kuenstliche intelligenz|automatis|prompt|maschine)/],
     ['Publikation / Buch', /(buch|publikation|magazin|magazine|ringbuch|lexikon|kalender)/],
     ['Research / Design', /(forschung|research|kritisch|analyse|investigative|untersuch)/],
@@ -230,8 +230,8 @@ if (!project) {
                 <figure class="project-preview__float project-preview__float--two">
                   <img id="project-float-two" src="${image}" alt="" style="--float-focus:${detailBlocks[0].floatFocus[1]} 50%;" />
                 </figure>
-                <figure class="project-preview__float project-preview__float--three">
-                  <img id="project-float-three" src="${image}" alt="" style="--float-focus:${detailBlocks[0].floatFocus[2]} 50%;" />
+                <figure class="project-preview__float project-preview__float--third">
+                  <img id="project-float-third" src="${image}" alt="" style="--float-focus:${detailBlocks[0].floatFocus[2]} 50%;" />
                 </figure>
               </figure>
 
@@ -313,7 +313,7 @@ if (!project) {
   const previewText = document.getElementById('project-preview-text');
   const floatOne = document.getElementById('project-float-one');
   const floatTwo = document.getElementById('project-float-two');
-  const floatThree = document.getElementById('project-float-three');
+  const floatThird = document.getElementById('project-float-third');
   const blockButtons = Array.from(document.querySelectorAll('[data-block-index]'));
 
   let activeIndex = 0;
@@ -335,7 +335,7 @@ if (!project) {
       if (previewImage) previewImage.style.setProperty('--project-focus', `${block.previewFocus}`);
       if (floatOne) floatOne.style.setProperty('--float-focus', `${block.floatFocus[0]} 50%`);
       if (floatTwo) floatTwo.style.setProperty('--float-focus', `${block.floatFocus[1]} 50%`);
-      if (floatThree) floatThree.style.setProperty('--float-focus', `${block.floatFocus[2]} 50%`);
+      if (floatThird) floatThird.style.setProperty('--float-focus', `${block.floatFocus[2]} 50%`);
       if (previewLabel) previewLabel.textContent = `Concept ${block.label}`;
       if (previewText) previewText.textContent = block.text;
       preview?.classList.remove('is-swapping');

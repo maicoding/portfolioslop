@@ -205,17 +205,23 @@ body:has(.window-header:hover) .cursor-ring {
   color: #ccff00;
 }
 
-/* 3D Render Overlay Layer */
-#three-canvas-container {
+/* Flat slop overlay layer */
+#slop-canvas-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 5;
-  /* Between the white bg and the windows/UI */
   pointer-events: none;
-  /* Crucial: clicks must pass through to windows and menus! */
+}
+
+.slop-background-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.64;
+  mix-blend-mode: multiply;
 }
 
 /* Main Directory */

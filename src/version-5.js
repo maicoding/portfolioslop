@@ -14,7 +14,7 @@ const baseTools = [
     color: 'var(--melon)',
     text:
       'Ein Partikelschwarm-Tool, bei dem erst die visuelle Konfiguration entsteht und daraus anschliessend ein exportierbarer Standalone-Code generiert wird.',
-    tags: ['three.js', 'particles', 'export'],
+    tags: ['canvas', 'particles', 'export'],
   },
   {
     id: 'slop-o-matic',
@@ -292,7 +292,7 @@ function derivePromptSpec(prompt = '') {
   }
 
   const emphasis = [];
-  if (text.includes('partikel') || text.includes('schwarm') || text.includes('three')) emphasis.push('swarm-gen');
+  if (text.includes('partikel') || text.includes('schwarm') || text.includes('canvas')) emphasis.push('swarm-gen');
   if (text.includes('internet') || text.includes('frage') || text.includes('antwort')) emphasis.push('i-find-the-luck');
   if (text.includes('bild') || text.includes('noise')) emphasis.push('copy-machine');
   if (text.includes('logo') || text.includes('marke')) emphasis.push('logo-generator');

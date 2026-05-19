@@ -3,9 +3,9 @@
 A deliberately over-generated AI slop portfolio experiment for Claudia Mai.
 
 It is a separate project and does not modify the existing portfolio site.
-The original site's pages, tools, assets, public media, PDFs, 3D models, text
-files, Vite config, and Netlify functions are included here as part of the Slop
-version.
+The original site's pages, tools, assets, public media, PDFs, text files, Vite
+config, and Netlify functions are included here as part of the Slop version.
+Heavy model assets were removed for the flattened Slop Gallery build.
 
 ## Run
 

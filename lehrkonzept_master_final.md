@@ -73,7 +73,7 @@ KI Video als Lehrformat ist entfernt.
       "Spatial Design",
       "VR/AR Verständnis",
       "Interaktionslogik",
-      "Arbeiten mit 3D Tools"
+      "Arbeiten mit digitalen Tools"
     ],
     "related": ["lp_vr_001"]
   },
@@ -131,7 +131,7 @@ KI Video als Lehrformat ist entfernt.
     "example": "Interaktive virtuelle Umgebungen.",
     "skills": [
       "Systemdenken",
-      "3D Gestaltung",
+      "Raeumliche Gestaltung",
       "Interaktion",
       "Narrative Räume"
     ],

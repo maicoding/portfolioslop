@@ -1,464 +1,116 @@
-import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
 import './vr-gallery.css';
-
-const posterItems = [
-  '/3d-vr/Screenshot_2026-04-10_140224.png',
-  '/3d-vr/Bildschirmfoto_2026-04-11_um_01.36.55.png',
-  '/3d-vr/Bildschirmfoto_2026-04-11_um_23.18.58.png',
-  '/3d-vr/Screenshot_2026-04-12_195410.png',
-  '/3d-vr/donutseite.png',
-  '/3d-vr/forestrender.png',
-];
-
-const projects = [
-  {
-    title: 'Iridescent Hair Study',
-    note: 'VR Kunstgalerie mit Skulptur',
-    image: '/3d-vr/Screenshot_2026-04-10_140224.png',
-  },
-  {
-    title: 'Soft Serve Blender',
-    note: '3D Modeling und Rendering',
-    image: '/3d-vr/Bildschirmfoto_2026-04-11_um_01.36.55.png',
-  },
-  {
-    title: 'Low Poly World',
-    note: 'Stilisierte Welt mit Spielzeugcharakter',
-    image: '/3d-vr/Bildschirmfoto_2026-04-11_um_23.18.58.png',
-  },
-  {
-    title: 'Architectural Viz',
-    note: 'Raum und Form als ruhige Visualisierung',
-    image: '/3d-vr/Screenshot_2026-04-12_195410.png',
-  },
-  {
-    title: 'Donut Universe',
-    note: 'Geometrische Farbwelt mit surrealem Impuls',
-    image: '/3d-vr/donutseite.png',
-  },
-  {
-    title: 'Forest Render',
-    note: 'Landschaft als atmosphaerische 3D-Szene',
-    image: '/3d-vr/forestrender.png',
-  },
-];
-
-const vertexShader = `
-precision highp float;
-
-attribute vec3 position;
-attribute vec2 uv;
-attribute vec3 normal;
-
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-
-uniform float uPosition;
-uniform float uTime;
-uniform float uSpeed;
-uniform vec3 distortionAxis;
-uniform vec3 rotationAxis;
-uniform float uDistortion;
-
-varying vec2 vUv;
-
-float PI = 3.141592653589793238;
-mat4 rotationMatrix(vec3 axis, float angle) {
-    axis = normalize(axis);
-    float s = sin(angle);
-    float c = cos(angle);
-    float oc = 1.0 - c;
-
-    return mat4(
-      oc * axis.x * axis.x + c,         oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
-      oc * axis.x * axis.y + axis.z * s,oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
-      oc * axis.z * axis.x - axis.y * s,oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
-      0.0,                              0.0,                                0.0,                                1.0
-    );
-}
-
-vec3 rotate(vec3 v, vec3 axis, float angle) {
-  mat4 m = rotationMatrix(axis, angle);
-  return (m * vec4(v, 1.0)).xyz;
-}
-
-float qinticInOut(float t) {
-  return t < 0.5
-    ? 16.0 * pow(t, 5.0)
-    : -0.5 * abs(pow(2.0 * t - 2.0, 5.0)) + 1.0;
-}
-
-void main() {
-  vUv = uv;
-
-  float norm = 0.5;
-  vec3 newpos = position;
-  float offset = (dot(distortionAxis, position) + norm / 2.0) / norm;
-  float localprogress = clamp(
-    (fract(uPosition * 5.0 * 0.01) - 0.01 * uDistortion * offset) / (1.0 - 0.01 * uDistortion),
-    0.0,
-    2.0
-  );
-  localprogress = qinticInOut(localprogress) * PI;
-  newpos = rotate(newpos, rotationAxis, localprogress);
-
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(newpos, 1.0);
-}
-`;
-
-const fragmentShader = `
-precision highp float;
-
-uniform vec2 uImageSize;
-uniform vec2 uPlaneSize;
-uniform sampler2D tMap;
-
-varying vec2 vUv;
-
-void main() {
-  vec2 imageSize = uImageSize;
-  vec2 planeSize = uPlaneSize;
-
-  float imageAspect = imageSize.x / imageSize.y;
-  float planeAspect = planeSize.x / planeSize.y;
-  vec2 scale = vec2(1.0, 1.0);
-
-  if (planeAspect > imageAspect) {
-    scale.x = imageAspect / planeAspect;
-  } else {
-    scale.y = planeAspect / imageAspect;
-  }
-
-  vec2 uv = vUv * scale + (1.0 - scale) * 0.5;
-  gl_FragColor = texture2D(tMap, uv);
-}
-`;
-
-function autoBind(self, { include, exclude } = {}) {
-  const getAllProperties = (object) => {
-    const properties = new Set();
-    do {
-      for (const key of Reflect.ownKeys(object)) properties.add([object, key]);
-    } while ((object = Reflect.getPrototypeOf(object)) && object !== Object.prototype);
-    return properties;
-  };
-
-  const filter = (key) => {
-    const match = (pattern) => (typeof pattern === 'string' ? key === pattern : pattern.test(key));
-    if (include) return include.some(match);
-    if (exclude) return !exclude.some(match);
-    return true;
-  };
-
-  for (const [object, key] of getAllProperties(self.constructor.prototype)) {
-    if (key === 'constructor' || !filter(key)) continue;
-    const descriptor = Reflect.getOwnPropertyDescriptor(object, key);
-    if (descriptor && typeof descriptor.value === 'function') {
-      self[key] = self[key].bind(self);
-    }
-  }
-}
-
-function lerp(p1, p2, t) {
-  return p1 + (p2 - p1) * t;
-}
-
-function map(num, min1, max1, min2, max2, round = false) {
-  const num1 = (num - min1) / (max1 - min1);
-  const num2 = num1 * (max2 - min2) + min2;
-  return round ? Math.round(num2) : num2;
-}
-
-class Media {
-  constructor({ gl, geometry, scene, screen, viewport, image, length, index, planeWidth, planeHeight, distortion }) {
-    this.extra = 0;
-    this.gl = gl;
-    this.geometry = geometry;
-    this.scene = scene;
-    this.screen = screen;
-    this.viewport = viewport;
-    this.image = image;
-    this.length = length;
-    this.index = index;
-    this.planeWidth = planeWidth;
-    this.planeHeight = planeHeight;
-    this.distortion = distortion;
-    this.createShader();
-    this.createMesh();
-    this.onResize();
-  }
-
-  createShader() {
-    const texture = new Texture(this.gl, { generateMipmaps: false });
-    this.program = new Program(this.gl, {
-      depthTest: false,
-      depthWrite: false,
-      fragment: fragmentShader,
-      vertex: vertexShader,
-      uniforms: {
-        tMap: { value: texture },
-        uPosition: { value: 0 },
-        uPlaneSize: { value: [0, 0] },
-        uImageSize: { value: [0, 0] },
-        uSpeed: { value: 0 },
-        rotationAxis: { value: [0, 1, 0] },
-        distortionAxis: { value: [1, 1, 0] },
-        uDistortion: { value: this.distortion },
-        uViewportSize: { value: [this.viewport.width, this.viewport.height] },
-        uTime: { value: 0 },
-      },
-      cullFace: false,
-    });
-
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = this.image;
-    img.onload = () => {
-      texture.image = img;
-      this.program.uniforms.uImageSize.value = [img.naturalWidth, img.naturalHeight];
-    };
-  }
-
-  createMesh() {
-    this.plane = new Mesh(this.gl, {
-      geometry: this.geometry,
-      program: this.program,
-    });
-    this.plane.setParent(this.scene);
-  }
-
-  setScale() {
-    this.plane.scale.x = (this.viewport.width * this.planeWidth) / this.screen.width;
-    this.plane.scale.y = (this.viewport.height * this.planeHeight) / this.screen.height;
-    this.plane.position.x = 0;
-    this.plane.program.uniforms.uPlaneSize.value = [this.plane.scale.x, this.plane.scale.y];
-  }
-
-  onResize({ screen, viewport } = {}) {
-    if (screen) this.screen = screen;
-    if (viewport) {
-      this.viewport = viewport;
-      this.plane.program.uniforms.uViewportSize.value = [this.viewport.width, this.viewport.height];
-    }
-
-    this.setScale();
-    this.padding = 0.8;
-    this.height = this.plane.scale.y + this.padding;
-    this.heightTotal = this.height * this.length;
-    this.y = -this.heightTotal / 2 + (this.index + 0.5) * this.height;
-  }
-
-  update(scroll) {
-    this.plane.position.y = this.y - scroll.current - this.extra;
-    const position = map(this.plane.position.y, -this.viewport.height, this.viewport.height, 5, 15);
-    this.program.uniforms.uPosition.value = position;
-    this.program.uniforms.uTime.value += 0.04;
-    this.program.uniforms.uSpeed.value = scroll.current;
-
-    const planeHeight = this.plane.scale.y;
-    const viewportHeight = this.viewport.height;
-    const topEdge = this.plane.position.y + planeHeight / 2;
-    const bottomEdge = this.plane.position.y - planeHeight / 2;
-
-    if (topEdge < -viewportHeight / 2) {
-      this.extra -= this.heightTotal;
-    } else if (bottomEdge > viewportHeight / 2) {
-      this.extra += this.heightTotal;
-    }
-  }
-}
-
-class FlyingPosterCanvas {
-  constructor({ container, canvas, items, planeWidth, planeHeight, distortion, scrollEase, cameraFov, cameraZ }) {
-    this.container = container;
-    this.canvas = canvas;
-    this.items = items;
-    this.planeWidth = planeWidth;
-    this.planeHeight = planeHeight;
-    this.distortion = distortion;
-    this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
-    this.cameraFov = cameraFov;
-    this.cameraZ = cameraZ;
-
-    autoBind(this);
-    this.createRenderer();
-    this.createCamera();
-    this.createScene();
-    this.onResize();
-    this.createGeometry();
-    this.createMedias();
-    this.createPreloader();
-    this.addEventListeners();
-    this.update();
-  }
-
-  createRenderer() {
-    this.renderer = new Renderer({
-      canvas: this.canvas,
-      alpha: true,
-      antialias: true,
-      dpr: Math.min(window.devicePixelRatio, 2),
-    });
-    this.gl = this.renderer.gl;
-  }
-
-  createCamera() {
-    this.camera = new Camera(this.gl);
-    this.camera.fov = this.cameraFov;
-    this.camera.position.z = this.cameraZ;
-  }
-
-  createScene() {
-    this.scene = new Transform();
-  }
-
-  createGeometry() {
-    this.planeGeometry = new Plane(this.gl, {
-      heightSegments: 1,
-      widthSegments: 100,
-    });
-  }
-
-  createMedias() {
-    this.medias = this.items.map(
-      (image, index) =>
-        new Media({
-          gl: this.gl,
-          geometry: this.planeGeometry,
-          scene: this.scene,
-          screen: this.screen,
-          viewport: this.viewport,
-          image,
-          length: this.items.length,
-          index,
-          planeWidth: this.planeWidth,
-          planeHeight: this.planeHeight,
-          distortion: this.distortion,
-        }),
-    );
-  }
-
-  createPreloader() {
-    this.loaded = 0;
-    if (!this.items.length) return;
-    this.items.forEach((src) => {
-      const image = new Image();
-      image.crossOrigin = 'anonymous';
-      image.src = src;
-      image.onload = () => {
-        this.loaded += 1;
-        if (this.loaded === this.items.length) {
-          document.documentElement.classList.remove('loading');
-          document.documentElement.classList.add('loaded');
-        }
-      };
-    });
-  }
-
-  onResize() {
-    const rect = this.container.getBoundingClientRect();
-    this.screen = { width: rect.width, height: rect.height };
-    this.renderer.setSize(this.screen.width, this.screen.height);
-    this.camera.perspective({ aspect: this.gl.canvas.width / this.gl.canvas.height });
-
-    const fov = (this.camera.fov * Math.PI) / 180;
-    const height = 2 * Math.tan(fov / 2) * this.camera.position.z;
-    const width = height * this.camera.aspect;
-    this.viewport = { height, width };
-
-    if (this.medias) {
-      this.medias.forEach((media) => media.onResize({ screen: this.screen, viewport: this.viewport }));
-    }
-  }
-
-  onTouchDown(e) {
-    this.isDown = true;
-    this.scroll.position = this.scroll.current;
-    this.start = e.touches ? e.touches[0].clientY : e.clientY;
-  }
-
-  onTouchMove(e) {
-    if (!this.isDown) return;
-    if (e.cancelable) e.preventDefault();
-    const y = e.touches ? e.touches[0].clientY : e.clientY;
-    const distance = (this.start - y) * 0.18;
-    this.scroll.target = this.scroll.position + distance;
-  }
-
-  onTouchUp() {
-    this.isDown = false;
-  }
-
-  onWheel(e) {
-    if (e.cancelable) e.preventDefault();
-    this.scroll.target += e.deltaY * 0.014;
-  }
-
-  update() {
-    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
-    if (this.medias) this.medias.forEach((media) => media.update(this.scroll));
-    this.renderer.render({ scene: this.scene, camera: this.camera });
-    this.scroll.last = this.scroll.current;
-    this.raf = requestAnimationFrame(this.update);
-  }
-
-  addEventListeners() {
-    window.addEventListener('resize', this.onResize);
-    this.container.addEventListener('wheel', this.onWheel, { passive: false });
-    this.container.addEventListener('mousewheel', this.onWheel, { passive: false });
-    this.container.addEventListener('mousedown', this.onTouchDown);
-    window.addEventListener('mousemove', this.onTouchMove);
-    window.addEventListener('mouseup', this.onTouchUp);
-    this.container.addEventListener('touchstart', this.onTouchDown, { passive: true });
-    this.container.addEventListener('touchmove', this.onTouchMove, { passive: false });
-    window.addEventListener('touchend', this.onTouchUp);
-  }
-
-  destroy() {
-    cancelAnimationFrame(this.raf);
-    window.removeEventListener('resize', this.onResize);
-    this.container.removeEventListener('wheel', this.onWheel);
-    this.container.removeEventListener('mousewheel', this.onWheel);
-    this.container.removeEventListener('mousedown', this.onTouchDown);
-    window.removeEventListener('mousemove', this.onTouchMove);
-    window.removeEventListener('mouseup', this.onTouchUp);
-    this.container.removeEventListener('touchstart', this.onTouchDown);
-    this.container.removeEventListener('touchmove', this.onTouchMove);
-    window.removeEventListener('touchend', this.onTouchUp);
-  }
-}
+import posterUrl from '../assets/slop-gallery-poster.png';
 
 const app = document.getElementById('vr-app');
 
+const flattenedWorks = [
+  {
+    title: 'Chrome Room, Exported As A Feeling',
+    type: 'flat render',
+    note: 'A room-shaped claim, now compressed into pure interface confidence.',
+    score: 'aura 94',
+  },
+  {
+    title: 'Portal Without Portal',
+    type: 'poster window',
+    note: 'All the language of immersion, none of the expensive machinery. A perfect institutional compromise.',
+    score: 'depth 0',
+  },
+  {
+    title: 'Gallery Of Implied Coordinates',
+    type: 'jpeg scene',
+    note: 'Coordinates, labels, and glossy panels pretending to be serious research.',
+    score: 'proof 88',
+  },
+  {
+    title: 'Formerly Rotatable Object',
+    type: 'slop artifact',
+    note: 'A decommissioned object now living as a shiny rectangle with excellent manners.',
+    score: 'spin no',
+  },
+  {
+    title: 'Synthetic Exhibition View',
+    type: 'fake walkthrough',
+    note: 'A walkthrough replaced by scroll, because the scroll had better battery life.',
+    score: 'tour 2D',
+  },
+  {
+    title: 'Flatland Render Farm',
+    type: 'archive smear',
+    note: 'The archive survived. The bulky objects did not. We thank them for their service.',
+    score: 'slop 100',
+  },
+];
+
+const logs = [
+  'Removed heavy machinery. Preserved overconfidence.',
+  'Flattened all portals into premium rectangles.',
+  'Replaced orbit controls with vibes and a scrollbar.',
+  'No headset detected. Launching poster mode.',
+  'Depth budget converted into magenta glow.',
+  'Immersive claim successfully downgraded to interface copy.',
+];
+
 app.innerHTML = `
   <main class="vr-page">
-    <a class="vr-back" href="/">zurueck zum index</a>
+    <a class="vr-back" href="/">back to slop index</a>
+
     <section class="vr-hero">
       <div class="vr-hero__copy">
-        <p class="vr-kicker">eigene projekte / 3d-vr</p>
-        <h1>3D/VR</h1>
+        <p class="vr-kicker">former heavy content / now flat</p>
+        <h1>Slop Gallery Without The Heavy Stuff.</h1>
+        <p>
+          The heavy assets are gone. What remains is the cliche: neon panels,
+          fake depth, status metrics, and a gallery that proudly refuses to do anything expensive.
+        </p>
       </div>
-      <div class="vr-stage posters-container" id="vr-stage" aria-label="Bewegte 3D-VR Galerie">
-        <canvas class="posters-canvas" id="vr-canvas"></canvas>
-        <p class="vr-stage__hint">Im Feld scrollen oder ziehen</p>
+
+      <div class="vr-poster" aria-label="Flat slop gallery poster">
+        <img src="${posterUrl}" alt="Flat neon slop gallery poster">
+        <div class="vr-poster__badge">
+          <span>render mode</span>
+          <strong>2D pretending</strong>
+        </div>
+        <div class="vr-poster__meter">
+          <span>shape count</span>
+          <strong data-shape-count>0</strong>
+        </div>
       </div>
     </section>
 
-    <section class="vr-index" aria-label="Projektliste">
+    <section class="vr-console" aria-label="Slop controls">
+      <div class="vr-control">
+        <label for="gloss-range">
+          <span>Gloss intensity</span>
+          <strong data-gloss-value>76</strong>
+        </label>
+        <input id="gloss-range" type="range" min="0" max="100" value="76">
+      </div>
+      <button class="vr-action" type="button" data-flatten>Flatten Again</button>
+      <ol class="vr-log" data-log>
+        <li>Bulky objects removed from repo.</li>
+        <li>Slop interface booted successfully.</li>
+        <li>Awaiting dramatic flat interaction.</li>
+      </ol>
+    </section>
+
+    <section class="vr-index">
+      <div class="vr-index__head">
+        <p class="vr-kicker">flat archive</p>
+        <h2>Six works, zero heavy objects.</h2>
+      </div>
       <div class="vr-list">
-        ${projects
+        ${flattenedWorks
           .map(
-            (project) => `
+            (work, index) => `
               <article class="vr-item">
-                <div class="vr-item__main">
-                  <figure class="vr-thumb">
-                    <img src="${project.image}" alt="${project.title}" loading="lazy" />
-                  </figure>
-                  <div>
-                    <h2>${project.title}</h2>
-                    <p>${project.note}</p>
-                  </div>
+                <span class="vr-item__number">${String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <p class="vr-item__type">${work.type}</p>
+                  <h3>${work.title}</h3>
+                  <p>${work.note}</p>
                 </div>
+                <strong>${work.score}</strong>
               </article>
             `,
           )
@@ -468,20 +120,36 @@ app.innerHTML = `
   </main>
 `;
 
-const container = document.getElementById('vr-stage');
-const canvas = document.getElementById('vr-canvas');
-const posterInstance = new FlyingPosterCanvas({
-  container,
-  canvas,
-  items: posterItems,
-  planeWidth: 320,
-  planeHeight: 320,
-  distortion: 3,
-  scrollEase: 0.01,
-  cameraFov: 45,
-  cameraZ: 20,
+const glossRange = document.getElementById('gloss-range');
+const glossValue = document.querySelector('[data-gloss-value]');
+const shapeCount = document.querySelector('[data-shape-count]');
+const log = document.querySelector('[data-log]');
+const flattenButton = document.querySelector('[data-flatten]');
+
+function addLog(message) {
+  const item = document.createElement('li');
+  item.textContent = message;
+  log.prepend(item);
+  while (log.children.length > 5) log.lastElementChild.remove();
+}
+
+function setGloss(value) {
+  document.documentElement.style.setProperty('--vr-gloss', value);
+  glossValue.textContent = value;
+  shapeCount.textContent = value > 92 ? 'still 0' : '0';
+}
+
+glossRange.addEventListener('input', (event) => {
+  setGloss(event.target.value);
 });
 
-window.addEventListener('beforeunload', () => {
-  posterInstance.destroy();
+flattenButton.addEventListener('click', () => {
+  const message = logs[Math.floor(Math.random() * logs.length)];
+  const poster = document.querySelector('.vr-poster');
+  addLog(message);
+  poster.classList.remove('is-flattening');
+  requestAnimationFrame(() => poster.classList.add('is-flattening'));
+  window.setTimeout(() => poster.classList.remove('is-flattening'), 460);
 });
+
+setGloss(glossRange.value);

@@ -1,133 +1,12 @@
 import './swarm-gen.css';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-const divide = (a, b) => a / b;
-
-const SHAPE_LOGIC = {
-  tesseract: {
-    name: '4D Tesseract',
-    shortLabel: 'Tesseract',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread, twist, breathAmp } = params;
-      const nSide = Math.floor(Math.pow(count, 0.25)) || 1;
-      const t = time * rotSpeed;
-      const breathing = 1 + Math.sin(time * 0.8) * 0.25 * breathAmp;
-
-      let idx = i;
-      const wIdx = idx % nSide;
-      idx = Math.floor(divide(idx - wIdx, nSide));
-      const zIdx = idx % nSide;
-      idx = Math.floor(divide(idx - zIdx, nSide));
-      const yIdx = idx % nSide;
-      const xIdx = Math.floor(divide(idx - yIdx, nSide));
-
-      const half = (nSide - 1) * 0.5;
-      const x4 = divide(xIdx - half, nSide);
-      const y4 = divide(yIdx - half, nSide);
-      const z4 = divide(zIdx - half, nSide);
-      const w4 = divide(wIdx - half, nSide);
-
-      const angle1 = t + twist * w4;
-      const x4r = x4 * Math.cos(angle1) - w4 * Math.sin(angle1);
-      const w4r = x4 * Math.sin(angle1) + w4 * Math.cos(angle1);
-      const depth = divide(1, 1 + Math.abs(w4r) * 1.5);
-      const s = spread * breathing * depth;
-
-      return new THREE.Vector3(x4r * s, y4 * s, z4 * s);
-    }
-  },
-  sphere: {
-    name: 'Golden Sphere',
-    shortLabel: 'Sphere',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread, breathAmp } = params;
-      const phi = Math.acos(-1 + divide(2 * i, count));
-      const theta = Math.sqrt(count * Math.PI) * phi;
-      const t = time * rotSpeed;
-      const r = spread * (1 + Math.sin(t + i * 0.01) * 0.1 * breathAmp);
-
-      return new THREE.Vector3(
-        r * Math.cos(theta + t) * Math.sin(phi),
-        r * Math.sin(theta + t) * Math.sin(phi),
-        r * Math.cos(phi)
-      );
-    }
-  },
-  helix: {
-    name: 'Double Helix',
-    shortLabel: 'Helix',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread, twist, breathAmp } = params;
-      const t = time * rotSpeed;
-      const ratio = divide(i, count);
-      const angle = ratio * Math.PI * 20 * twist + t;
-      const r = spread * 0.4 * (1 + Math.sin(t * 2 + ratio * 10) * 0.1 * breathAmp);
-      const y = (ratio - 0.5) * spread * 2;
-      const side = i % 2 === 0 ? 1 : -1;
-
-      return new THREE.Vector3(
-        Math.cos(angle) * r * side,
-        y,
-        Math.sin(angle) * r * side
-      );
-    }
-  },
-  torus: {
-    name: 'Cosmic Torus',
-    shortLabel: 'Torus',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread, twist, breathAmp } = params;
-      const t = time * rotSpeed;
-      const u = divide(i, count) * Math.PI * 2;
-      const v = divide(i % 100, 100) * Math.PI * 2 * twist;
-      const R = spread * 0.8;
-      const r = spread * 0.3 * (1 + Math.sin(t + u * 5) * 0.2 * breathAmp);
-
-      return new THREE.Vector3(
-        (R + r * Math.cos(v + t)) * Math.cos(u),
-        (R + r * Math.cos(v + t)) * Math.sin(u),
-        r * Math.sin(v + t)
-      );
-    }
-  },
-  mobius: {
-    name: 'Mobius Strip',
-    shortLabel: 'Mobius',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread } = params;
-      const t = time * rotSpeed;
-      const u = divide(i, count) * Math.PI * 2;
-      const v = Math.sin(i * 0.5) * 0.5 * spread * 0.4;
-      const r = spread * 0.7;
-
-      return new THREE.Vector3(
-        (r + v * Math.cos(divide(u, 2) + t)) * Math.cos(u),
-        (r + v * Math.cos(divide(u, 2) + t)) * Math.sin(u),
-        v * Math.sin(divide(u, 2) + t)
-      );
-    }
-  },
-  storm: {
-    name: 'Hyper Storm',
-    shortLabel: 'Storm',
-    math: (i, count, time, params) => {
-      const { rotSpeed, spread, twist, breathAmp } = params;
-      const t = time * rotSpeed;
-      const angle = divide(i, count) * Math.PI * 2 + t;
-      const r = spread * (0.5 + Math.sin(t * 0.5 + i * 0.001) * 0.5);
-      const chaos = Math.sin(i * 0.1 + t) * 10 * breathAmp;
-
-      return new THREE.Vector3(
-        Math.cos(angle * twist) * r + chaos,
-        Math.sin(angle) * Math.cos(t) * r,
-        Math.sin(angle * twist) * r + chaos
-      );
-    }
-  }
+const SHAPES = {
+  tesseract: { name: 'Flat Tesseract', shortLabel: 'Tesseract' },
+  sphere: { name: 'Sticker Sphere', shortLabel: 'Sphere' },
+  helix: { name: 'Poster Helix', shortLabel: 'Helix' },
+  torus: { name: 'Fake Torus', shortLabel: 'Torus' },
+  mobius: { name: 'Ribbon Loop', shortLabel: 'Mobius' },
+  storm: { name: 'Slop Storm', shortLabel: 'Storm' },
 };
 
 const countRange = document.getElementById('count-range');
@@ -150,13 +29,16 @@ const canvasContainer = document.getElementById('swarm-canvas');
 let shape = 'tesseract';
 let count = 15000;
 let params = {
-  rotSpeed: 1.0,
+  rotSpeed: 1,
   spread: 60,
-  twist: 1.0,
+  twist: 1,
   breathAmp: 0.8,
   bloom: 1.5,
-  hue: 0.5
+  hue: 0.5,
 };
+let particles = [];
+let generatedCodeCache = '';
+let animationId = null;
 
 const paramConfig = {
   rotSpeed: { min: 0, max: 4, step: 0.01 },
@@ -164,414 +46,282 @@ const paramConfig = {
   twist: { min: 0, max: 4, step: 0.01 },
   breathAmp: { min: 0, max: 1, step: 0.01 },
   bloom: { min: 0, max: 5, step: 0.01 },
-  hue: { min: 0, max: 1, step: 0.01 }
+  hue: { min: 0, max: 1, step: 0.01 },
 };
 
-let runtime = null;
-let generatedCodeCache = '';
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+canvasContainer.appendChild(canvas);
 
 function formatLabel(value) {
   return value.replace(/([A-Z])/g, ' $1').trim();
 }
 
 function updateActiveShapeLabel() {
-  activeShapeLabel.textContent = SHAPE_LOGIC[shape].name;
+  activeShapeLabel.textContent = SHAPES[shape].name;
 }
 
-function updateLiveStateLabel(message = 'Preview active') {
-  liveStateLabel.textContent = message;
+function shapePoint(index, total, time) {
+  const ratio = index / Math.max(total - 1, 1);
+  const t = time * 0.001 * params.rotSpeed;
+  const spread = params.spread * 3.6;
+  const twist = params.twist;
+  const breath = 1 + Math.sin(t + index * 0.01) * 0.08 * params.breathAmp;
+
+  if (shape === 'sphere') {
+    const angle = ratio * Math.PI * 2 * 34 + t;
+    const radius = Math.sqrt(ratio) * spread * 0.95 * breath;
+    return {
+      x: Math.cos(angle) * radius,
+      y: Math.sin(angle) * radius,
+    };
+  }
+
+  if (shape === 'helix') {
+    const angle = ratio * Math.PI * 18 * twist + t;
+    return {
+      x: Math.cos(angle) * spread * 0.42,
+      y: (ratio - 0.5) * spread * 1.8,
+    };
+  }
+
+  if (shape === 'torus') {
+    const a = ratio * Math.PI * 2;
+    const b = (index % 160) / 160 * Math.PI * 2 * twist + t;
+    const radius = spread * 0.62 + Math.cos(b) * spread * 0.18;
+    return {
+      x: Math.cos(a + t * 0.3) * radius,
+      y: Math.sin(a + t * 0.3) * radius * 0.64 + Math.sin(b) * spread * 0.18,
+    };
+  }
+
+  if (shape === 'mobius') {
+    const a = ratio * Math.PI * 2;
+    const ribbon = Math.sin(index * 0.17 + t) * spread * 0.18;
+    return {
+      x: Math.cos(a) * (spread * 0.72 + ribbon),
+      y: Math.sin(a * 2 + t) * spread * 0.28 + Math.sin(a) * spread * 0.42,
+    };
+  }
+
+  if (shape === 'storm') {
+    const angle = ratio * Math.PI * 42 * twist + t * 1.8;
+    const radius = ratio * spread * (0.4 + params.breathAmp);
+    const chaos = Math.sin(index * 0.31 + t * 2) * spread * 0.12;
+    return {
+      x: Math.cos(angle) * radius + chaos,
+      y: Math.sin(angle * 0.8) * radius * 0.72 - chaos,
+    };
+  }
+
+  const side = Math.ceil(Math.sqrt(total));
+  const x = (index % side) / side - 0.5;
+  const y = Math.floor(index / side) / side - 0.5;
+  const wobble = Math.sin((x + y) * 10 * twist + t) * 14 * params.breathAmp;
+  return {
+    x: x * spread * 1.45 + wobble,
+    y: y * spread * 1.45 - wobble * 0.5,
+  };
+}
+
+function resize() {
+  const rect = canvasContainer.getBoundingClientRect();
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.floor(rect.width * ratio);
+  canvas.height = Math.floor(rect.height * ratio);
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+
+function buildParticles() {
+  const visibleCount = Math.min(count, window.innerWidth < 700 ? 3600 : 9000);
+  particles = Array.from({ length: visibleCount }, (_, index) => ({
+    index,
+    size: 0.7 + Math.random() * 2.1,
+    jitter: Math.random() * Math.PI * 2,
+  }));
+}
+
+function render(time = 0) {
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const cx = width * 0.56;
+  const cy = height * 0.5;
+  const hue = params.hue * 360;
+
+  ctx.clearRect(0, 0, width, height);
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(width, height) * 0.8);
+  bg.addColorStop(0, `hsla(${hue}, 100%, 56%, 0.26)`);
+  bg.addColorStop(0.42, 'rgba(39, 215, 255, 0.08)');
+  bg.addColorStop(1, 'rgba(5, 5, 5, 1)');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.save();
+  ctx.globalAlpha = 0.16;
+  ctx.strokeStyle = '#ffffff';
+  for (let x = 0; x < width; x += 64) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + Math.sin(time * 0.0004 + x) * 22, height);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  ctx.save();
+  ctx.shadowBlur = 10 + params.bloom * 8;
+  particles.forEach((particle) => {
+    const point = shapePoint(particle.index, particles.length, time);
+    const pulse = Math.sin(time * 0.002 + particle.jitter) * params.breathAmp;
+    const x = cx + point.x + Math.cos(particle.jitter + time * 0.001) * pulse * 7;
+    const y = cy + point.y + Math.sin(particle.jitter + time * 0.001) * pulse * 7;
+    const localHue = (hue + particle.index * 0.08) % 360;
+    ctx.fillStyle = `hsla(${localHue}, 100%, 68%, 0.72)`;
+    ctx.shadowColor = `hsl(${localHue}, 100%, 62%)`;
+    ctx.beginPath();
+    ctx.arc(x, y, particle.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.restore();
+
+  animationId = requestAnimationFrame(render);
 }
 
 function renderShapeButtons() {
-  shapeGrid.innerHTML = Object.entries(SHAPE_LOGIC)
-    .map(
-      ([key, config]) => `
-        <button class="shape-btn${shape === key ? ' is-active' : ''}" type="button" data-shape="${key}" aria-pressed="${shape === key}">
-          <span>${config.shortLabel}</span>
-        </button>
-      `
-    )
+  shapeGrid.innerHTML = Object.entries(SHAPES)
+    .map(([key, item]) => `
+      <button class="shape-btn ${key === shape ? 'is-active' : ''}" type="button" data-shape="${key}">
+        <span>${item.shortLabel}</span>
+      </button>
+    `)
     .join('');
+
+  shapeGrid.querySelectorAll('[data-shape]').forEach((button) => {
+    button.addEventListener('click', () => {
+      shape = button.dataset.shape;
+      updateActiveShapeLabel();
+      renderShapeButtons();
+      liveStateLabel.textContent = `${SHAPES[shape].shortLabel} flattened`;
+    });
+  });
 }
 
 function renderParamControls() {
-  paramControls.innerHTML = Object.entries(params)
-    .map(([key, value]) => {
-      const config = paramConfig[key];
-      return `
-        <label class="range-control">
-          <div class="range-control__meta">
-            <span>${formatLabel(key)}</span>
-            <strong id="value-${key}">${value.toFixed(2)}</strong>
-          </div>
-          <input
-            type="range"
-            data-param="${key}"
-            min="${config.min}"
-            max="${config.max}"
-            step="${config.step}"
-            value="${value}"
-          >
-        </label>
-      `;
-    })
+  paramControls.innerHTML = Object.entries(paramConfig)
+    .map(([key, config]) => `
+      <div class="range-control">
+        <div class="range-control__meta">
+          <span>${formatLabel(key)}</span>
+          <strong id="${key}-value">${params[key].toFixed(2)}</strong>
+        </div>
+        <input id="${key}-range" type="range" min="${config.min}" max="${config.max}" step="${config.step}" value="${params[key]}">
+      </div>
+    `)
     .join('');
+
+  Object.keys(paramConfig).forEach((key) => {
+    const input = document.getElementById(`${key}-range`);
+    const output = document.getElementById(`${key}-value`);
+    input.addEventListener('input', () => {
+      params[key] = Number(input.value);
+      output.textContent = params[key].toFixed(2);
+    });
+  });
 }
 
-function updateCountLabel() {
+function updateCount() {
+  count = Number(countRange.value);
   countValue.textContent = count.toLocaleString('en-US');
+  buildParticles();
 }
 
-function getGeneratedCode() {
-  const currentShape = SHAPE_LOGIC[shape];
-  const sOpen = '<script>';
-  const sClose = '</' + 'script>';
-  let mathStr = String(currentShape.math);
-  mathStr = mathStr.split('params').join('PARAMS').split('count').join('COUNT');
-
-  return `<!DOCTYPE html>
+function makeStandaloneHtml() {
+  const safeParams = JSON.stringify(params);
+  return `<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swarm Export - ${currentShape.name}</title>
-  <style>
-    body { margin: 0; overflow: hidden; background: #050505; }
-  </style>
-  ${sOpen}
-    window.addEventListener('error', (e) => {
-      console.error('Swarm Runtime Error:', e.message);
-    });
-  ${sClose}
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.183.2/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.183.2/examples/jsm/"
-      }
-    }
-  ${sClose}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flat Swarm Export</title>
+<style>
+html,body{margin:0;height:100%;background:#050505;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+</style>
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-
-    const COUNT = ${count};
-    const PARAMS = ${JSON.stringify(params)};
-    const divide = (a, b) => a / b;
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050505);
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 2000);
-    camera.position.set(0, 0, 150);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    document.body.appendChild(renderer.domElement);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-    const bloomPass = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      PARAMS.bloom,
-      0.4,
-      0.85
-    );
-    composer.addPass(bloomPass);
-
-    const instancedMesh = new THREE.InstancedMesh(
-      new THREE.TetrahedronGeometry(0.3),
-      new THREE.MeshBasicMaterial(),
-      COUNT
-    );
-    scene.add(instancedMesh);
-
-    const dummy = new THREE.Object3D();
-    const color = new THREE.Color();
-    const positions = Array.from({ length: COUNT }, () => new THREE.Vector3());
-    const clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-
-      for (let i = 0; i < COUNT; i++) {
-        const pos = (${mathStr})(i, COUNT, time, PARAMS);
-        positions[i].lerp(pos, 0.1);
-        dummy.position.copy(positions[i]);
-        dummy.rotation.x = time * 0.2 + i * 0.001;
-        dummy.updateMatrix();
-        instancedMesh.setMatrixAt(i, dummy.matrix);
-        color.setHSL((PARAMS.hue + divide(i, COUNT) * 0.2 + Math.sin(time * 0.2) * 0.1) % 1, 0.8, 0.6);
-        instancedMesh.setColorAt(i, color);
-      }
-
-      instancedMesh.instanceMatrix.needsUpdate = true;
-      if (instancedMesh.instanceColor) instancedMesh.instanceColor.needsUpdate = true;
-      controls.update();
-      composer.render();
-    }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      composer.setSize(window.innerWidth, window.innerHeight);
-    });
-  ${sClose}
+<canvas></canvas>
+<script>
+const shape=${JSON.stringify(shape)};
+const params=${safeParams};
+const canvas=document.querySelector('canvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+function resize(){const r=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*r;canvas.height=innerHeight*r;ctx.setTransform(r,0,0,r,0,0);particles=Array.from({length:5000},(_,i)=>({i,s:.8+Math.random()*2,j:Math.random()*6.28}))}
+function point(i,total,time){const ratio=i/Math.max(total-1,1);const t=time*.001*params.rotSpeed;const spread=params.spread*3.4;if(shape==='sphere'){const a=ratio*Math.PI*68+t;const r=Math.sqrt(ratio)*spread;return{x:Math.cos(a)*r,y:Math.sin(a)*r}}if(shape==='helix'){const a=ratio*Math.PI*18*params.twist+t;return{x:Math.cos(a)*spread*.42,y:(ratio-.5)*spread*1.8}}if(shape==='torus'){const a=ratio*Math.PI*2;const b=(i%160)/160*Math.PI*2*params.twist+t;const r=spread*.62+Math.cos(b)*spread*.18;return{x:Math.cos(a+t*.3)*r,y:Math.sin(a+t*.3)*r*.64+Math.sin(b)*spread*.18}}if(shape==='mobius'){const a=ratio*Math.PI*2;const ribbon=Math.sin(i*.17+t)*spread*.18;return{x:Math.cos(a)*(spread*.72+ribbon),y:Math.sin(a*2+t)*spread*.28+Math.sin(a)*spread*.42}}if(shape==='storm'){const a=ratio*Math.PI*42*params.twist+t*1.8;const r=ratio*spread*(.4+params.breathAmp);const c=Math.sin(i*.31+t*2)*spread*.12;return{x:Math.cos(a)*r+c,y:Math.sin(a*.8)*r*.72-c}}const side=Math.ceil(Math.sqrt(total));const x=i%side/side-.5;const y=Math.floor(i/side)/side-.5;const w=Math.sin((x+y)*10*params.twist+t)*14*params.breathAmp;return{x:x*spread*1.45+w,y:y*spread*1.45-w*.5}}
+function draw(time=0){ctx.clearRect(0,0,innerWidth,innerHeight);const hue=params.hue*360;const g=ctx.createRadialGradient(innerWidth*.56,innerHeight*.5,0,innerWidth*.56,innerHeight*.5,Math.max(innerWidth,innerHeight)*.8);g.addColorStop(0,'hsla('+hue+',100%,56%,.28)');g.addColorStop(1,'#050505');ctx.fillStyle=g;ctx.fillRect(0,0,innerWidth,innerHeight);ctx.shadowBlur=10+params.bloom*8;particles.forEach(p=>{const q=point(p.i,particles.length,time);const h=(hue+p.i*.08)%360;ctx.fillStyle='hsla('+h+',100%,68%,.72)';ctx.shadowColor='hsl('+h+',100%,62%)';ctx.beginPath();ctx.arc(innerWidth*.56+q.x,innerHeight*.5+q.y,p.s,0,Math.PI*2);ctx.fill()});requestAnimationFrame(draw)}
+addEventListener('resize',resize);resize();draw();
+</script>
 </body>
 </html>`;
 }
 
-function generateCodeSnapshot() {
-  generatedCodeCache = getGeneratedCode();
+function refreshCode() {
+  generatedCodeCache = makeStandaloneHtml();
   codeOutput.textContent = generatedCodeCache;
-  updateLiveStateLabel('Code generated');
+  liveStateLabel.textContent = 'Code generated';
 }
 
-function downloadGeneratedHtml() {
-  if (!generatedCodeCache) {
-    generateCodeSnapshot();
+async function copyCode() {
+  if (!generatedCodeCache) refreshCode();
+  try {
+    await navigator.clipboard.writeText(generatedCodeCache);
+    liveStateLabel.textContent = 'Code copied';
+  } catch {
+    liveStateLabel.textContent = 'Copy unavailable';
   }
+}
 
-  const fileName = `swarm_${shape}.html`;
+function downloadHtml() {
+  if (!generatedCodeCache) refreshCode();
   const blob = new Blob([generatedCodeCache], { type: 'text/html' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
+  link.download = `flat-swarm-${shape}.html`;
   link.click();
-  document.body.removeChild(link);
   URL.revokeObjectURL(url);
-  updateLiveStateLabel(`Downloaded ${fileName}`);
+  liveStateLabel.textContent = 'HTML downloaded';
 }
 
 function captureFrame() {
-  if (!runtime?.renderer || !runtime?.composer) return;
-
-  runtime.composer.render();
-  const dataUrl = runtime.renderer.domElement.toDataURL('image/png');
-  const fileName = `swarm_render_${shape}_${Date.now()}.png`;
   const link = document.createElement('a');
-  link.href = dataUrl;
-  link.download = fileName;
-  document.body.appendChild(link);
+  link.href = canvas.toDataURL('image/png');
+  link.download = `flat-swarm-${shape}.png`;
   link.click();
-  document.body.removeChild(link);
-  updateLiveStateLabel(`Captured ${fileName}`);
+  liveStateLabel.textContent = 'PNG rendered';
 }
 
-async function copyGeneratedCode() {
-  if (!generatedCodeCache) {
-    generateCodeSnapshot();
-  }
-
-  await navigator.clipboard.writeText(generatedCodeCache);
-  const previous = copyCodeBtn.textContent;
-  copyCodeBtn.textContent = 'Copied';
-  copyCodeBtn.classList.add('swarm-btn--success');
-  if (copyCodeModalBtn) {
-    copyCodeModalBtn.textContent = 'Copied';
-  }
-  window.setTimeout(() => {
-    copyCodeBtn.textContent = previous === 'Copied' ? 'Copy Code' : previous;
-    copyCodeBtn.classList.remove('swarm-btn--success');
-    if (copyCodeModalBtn) {
-      copyCodeModalBtn.textContent = 'Copy All';
-    }
-  }, 1600);
-}
-
-function disposeRuntime(currentRuntime) {
-  if (!currentRuntime) return;
-
-  cancelAnimationFrame(currentRuntime.frameId);
-  window.removeEventListener('resize', currentRuntime.onResize);
-  currentRuntime.controls.dispose();
-  currentRuntime.composer.dispose();
-  currentRuntime.instancedMesh.geometry.dispose();
-  currentRuntime.instancedMesh.material.dispose();
-  currentRuntime.renderer.dispose();
-
-  if (currentRuntime.renderer.domElement.parentNode) {
-    currentRuntime.renderer.domElement.parentNode.removeChild(currentRuntime.renderer.domElement);
-  }
-}
-
-function createRuntime() {
-  disposeRuntime(runtime);
-
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x050505);
-
-  const camera = new THREE.PerspectiveCamera(60, divide(width, height), 1, 2000);
-  camera.position.set(0, 0, 150);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-  renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  canvasContainer.appendChild(renderer.domElement);
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.5;
-
-  const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), params.bloom, 0.4, 0.85);
-  composer.addPass(bloomPass);
-
-  const geometry = new THREE.TetrahedronGeometry(0.3);
-  const material = new THREE.MeshBasicMaterial();
-  const instancedMesh = new THREE.InstancedMesh(geometry, material, count);
-  scene.add(instancedMesh);
-
-  const dummy = new THREE.Object3D();
-  const color = new THREE.Color();
-  const positions = Array.from({ length: count }, () => new THREE.Vector3());
-  const clock = new THREE.Clock();
-
-  const localRuntime = {
-    renderer,
-    composer,
-    controls,
-    instancedMesh,
-    frameId: 0,
-    onResize: () => {
-      camera.aspect = divide(window.innerWidth, window.innerHeight);
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      composer.setSize(window.innerWidth, window.innerHeight);
-    }
-  };
-
-  function animate() {
-    localRuntime.frameId = requestAnimationFrame(animate);
-    const time = clock.getElapsedTime();
-    const currentShape = SHAPE_LOGIC[shape];
-    bloomPass.strength = params.bloom;
-
-    for (let i = 0; i < count; i += 1) {
-      const target = currentShape.math(i, count, time, params);
-      positions[i].lerp(target, 0.1);
-      dummy.position.copy(positions[i]);
-      dummy.rotation.x = time * 0.2 + i * 0.001;
-      dummy.updateMatrix();
-      instancedMesh.setMatrixAt(i, dummy.matrix);
-
-      const hueValue = (params.hue + divide(i, count) * 0.2 + Math.sin(time * 0.2) * 0.1) % 1;
-      color.setHSL(hueValue, 0.8, 0.6);
-      instancedMesh.setColorAt(i, color);
-    }
-
-    instancedMesh.instanceMatrix.needsUpdate = true;
-    if (instancedMesh.instanceColor) {
-      instancedMesh.instanceColor.needsUpdate = true;
-    }
-
-    controls.update();
-    composer.render();
-  }
-
-  window.addEventListener('resize', localRuntime.onResize);
-  animate();
-  runtime = localRuntime;
-}
-
-function rerenderScene() {
-  updateCountLabel();
-  updateActiveShapeLabel();
-  renderShapeButtons();
-  renderParamControls();
-  createRuntime();
-  updateLiveStateLabel('Preview active');
-}
-
-shapeGrid.addEventListener('click', (event) => {
-  const button = event.target.closest('[data-shape]');
-  if (!button) return;
-  shape = button.dataset.shape;
-  rerenderScene();
-});
-
-paramControls.addEventListener('input', (event) => {
-  const input = event.target.closest('[data-param]');
-  if (!input) return;
-  const key = input.dataset.param;
-  params[key] = Number.parseFloat(input.value);
-  const output = document.getElementById(`value-${key}`);
-  if (output) output.textContent = params[key].toFixed(2);
-  updateLiveStateLabel('Preview updated');
-});
-
-countRange.addEventListener('input', (event) => {
-  count = Number.parseInt(event.target.value, 10);
-  updateCountLabel();
-  updateLiveStateLabel('Particle count changed');
-});
-
-countRange.addEventListener('change', () => {
-  createRuntime();
-});
-
-generateCodeBtn.addEventListener('click', () => {
-  generateCodeSnapshot();
-});
-
-downloadHtmlBtn.addEventListener('click', () => {
-  downloadGeneratedHtml();
-});
-
-captureFrameBtn.addEventListener('click', () => {
-  captureFrame();
-});
-
+countRange.addEventListener('input', updateCount);
+generateCodeBtn.addEventListener('click', refreshCode);
+downloadHtmlBtn.addEventListener('click', downloadHtml);
+captureFrameBtn.addEventListener('click', captureFrame);
 toggleCodeBtn.addEventListener('click', () => {
-  if (!generatedCodeCache) {
-    generateCodeSnapshot();
-  }
+  if (!generatedCodeCache) refreshCode();
   codeModal.hidden = false;
 });
-
+copyCodeBtn.addEventListener('click', copyCode);
+copyCodeModalBtn.addEventListener('click', copyCode);
 closeCodeBtn.addEventListener('click', () => {
   codeModal.hidden = true;
 });
 
-codeModal.addEventListener('click', (event) => {
-  if (event.target === codeModal) {
-    codeModal.hidden = true;
-  }
-});
+window.addEventListener('resize', resize);
 
-copyCodeBtn.addEventListener('click', () => {
-  copyGeneratedCode().catch(() => {});
-});
-
-copyCodeModalBtn.addEventListener('click', () => {
-  copyGeneratedCode().catch(() => {});
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && !codeModal.hidden) {
-    codeModal.hidden = true;
-  }
-});
-
-rerenderScene();
-
-window.addEventListener('beforeunload', () => {
-  disposeRuntime(runtime);
-});
+renderShapeButtons();
+renderParamControls();
+updateActiveShapeLabel();
+updateCount();
+resize();
+if (animationId) cancelAnimationFrame(animationId);
+render();

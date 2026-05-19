@@ -1,4 +1,4 @@
-import fantasyLandscapeImage from './assets/fantasy-landscape.png';
+import slopGalleryPosterImage from '../assets/slop-gallery-poster.png';
 import digilabLogoImage from './assets/digilablogo.png';
 import postEverythingLogoImage from './assets/post-everything-logo.png';
 
@@ -46,14 +46,14 @@ export const projectsData = {
     "url": "https://sugarscroll.de/work/fmdg-i-find-the-luck/"
   },
   "fantasy-landscape": {
-    "title": "3D/VR",
-    "text": "Eine bunte, surreale 3D-Welt aus schwebenden Inseln, knallbunten Baeumen und leuchtenden Kristallen irgendwo zwischen Spielzeuglandschaft und Traumsequenz. Pink, Lila, Orange, Cyan und Neongruen ueberlagern sich in einer isometrischen Draufsicht zu einer fast physisch greifbaren Miniaturwelt, ergaenzt durch Wolken, Glueh-Orbs und Eiszapfen unter den Inseln. Das Drei-Punkt-Licht in Warm-Pink, Lila und Cyan verstaerkt die unwirkliche, magische Atmosphaere und laesst die Szene zwischen Game-Aesthetik und Diorama pendeln. Zeigt: 3D, Modellierung, Cycles Rendering.",
-    "image": fantasyLandscapeImage,
-    "url": "#"
+    "title": "Slop Gallery",
+    "text": "Eine bewusst flachgedrueckte Galerie aus Neonpostern, Gloss-Flaechen, Statusanzeigen und viel zu selbstbewusster Interface-Sprache. Was frueher nach Raum behauptet wurde, ist jetzt ein scrollbarer Slop-Index: laut, billig-glamouroes und trotzdem funktional.",
+    "image": slopGalleryPosterImage,
+    "url": "/threedvr.html"
   },
   "digilab-ai-schriftzug": {
-    "title": "3D / digilab.ai Schriftzug",
-    "text": "Schriftzug aus dichtem, flauschigem Fell, Objekt zwischen Shader-Experiment und digitalem Artefakt. Ein Schriftzug irgendwo zwischen Produktbild, Plueschtier und Rendering-Studie. Typografie wird hier nicht nur gestaltet, sondern modelliert, beleuchtet und als raeumliche Form erfahrbar gemacht. Zeigt: 3D, Typografie, Cycles Rendering, Procedural Shading, Particle Systems.",
+    "title": "digilab.ai Schriftzug",
+    "text": "Schriftzug aus dichtem, flauschigem Fell, irgendwo zwischen Produktbild, Plueschtier und digitalem Artefakt. Typografie wird hier nicht nur gesetzt, sondern als ueberreizte, taktile Bildbehauptung inszeniert.",
     "image": digilabLogoImage,
     "url": "#"
   },

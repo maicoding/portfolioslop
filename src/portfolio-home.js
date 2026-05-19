@@ -1,7 +1,7 @@
 import './portfolio-home.css';
 import { projectsData } from './data.js';
 import postEverythingLogoImage from './assets/post-everything-logo.png';
-import fantasyLandscapeImage from './assets/fantasy-landscape.png';
+import slopGalleryPosterImage from '../assets/slop-gallery-poster.png';
 import gravityImage from './assets/gravity-is-optional/image-0.png';
 
 const app = document.getElementById('portfolio-app');
@@ -38,14 +38,14 @@ const featuredProjects = [
     text: 'Generative Bilder, die nicht nach KI-Spektakel schreien, sondern fast dokumentarisch wirken und dann an einer kleinen falschen Stelle kippen.',
   },
   {
-    title: '3D / VR',
-    category: 'Raum',
+    title: 'Slop Gallery',
+    category: 'Flat Archive',
     href: '/threedvr.html',
-    cta: '3D / VR öffnen',
-    image: fantasyLandscapeImage,
-    imageAlt: '3D-Landschaft als Vorschaubild',
-    meta: 'Blender, VR, Modellraum, digitale Buehne',
-    text: 'Ein Cluster aus raeumlichen Arbeiten, Modellen und Renderings. Die Seite funktioniert eher wie ein bewegter Materialtisch als wie eine saubere Galerie.',
+    cta: 'Slop Gallery oeffnen',
+    image: slopGalleryPosterImage,
+    imageAlt: 'Flache Slop-Galerie als Vorschaubild',
+    meta: 'Posterlogik, Canvas-Gluehen, ueberdrehter Projektindex',
+    text: 'Der ehemalige Raum-Cluster ist jetzt maximal flach: Neonposter, Statuswerte, Gloss, UI-Behauptungen und genau null schwere Modelllogik.',
   },
 ];
 
@@ -75,7 +75,7 @@ app.innerHTML = `
     <div class="portfolio-hero__copy">
       <p class="portfolio-kicker">Claudia Mai</p>
       <h1>Index fuer Gestaltung, Lehre, Code und Systeme.</h1>
-      <p class="portfolio-subheadline">Arbeiten zwischen Buch, Browser, KI, 3D und Unterricht. Nicht als glatte Case-Study-Wand, sondern als benutzbares Archiv mit kleinen Widerhaken.</p>
+      <p class="portfolio-subheadline">Arbeiten zwischen Buch, Browser, KI, Tools und Unterricht. Nicht als glatte Case-Study-Wand, sondern als benutzbares Archiv mit kleinen Widerhaken.</p>
       <nav class="portfolio-jump" aria-label="Seitennavigation">
         <a href="#arbeiten">Arbeiten</a>
         <a href="#bereiche">Bereiche</a>
